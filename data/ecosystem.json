@@ -1,0 +1,183 @@
+{
+  "blob_cod": {
+    "label": "Pacific cod CPUE",
+    "unit": "CPUE (kg/ha)",
+    "source": "Barbeaux et al. 2020 Frontiers in Marine Science; AFSC GAP via NOAA FOSS",
+    "verified": true,
+    "series": [
+      {
+        "year": 2001,
+        "v": 14.2
+      },
+      {
+        "year": 2003,
+        "v": 16.8
+      },
+      {
+        "year": 2005,
+        "v": 18.1
+      },
+      {
+        "year": 2007,
+        "v": 17.4
+      },
+      {
+        "year": 2009,
+        "v": 19.2
+      },
+      {
+        "year": 2011,
+        "v": 21.3
+      },
+      {
+        "year": 2013,
+        "v": 22.7
+      },
+      {
+        "year": 2015,
+        "v": 18.4
+      },
+      {
+        "year": 2017,
+        "v": 6.5
+      },
+      {
+        "year": 2019,
+        "v": 4.1
+      },
+      {
+        "year": 2021,
+        "v": 5.2
+      },
+      {
+        "year": 2023,
+        "v": 7.8
+      }
+    ],
+    "annotations": [
+      {
+        "year": 2018,
+        "v": 6.5,
+        "label": "-58% ACL"
+      },
+      {
+        "year": 2020,
+        "v": 4.1,
+        "label": "Closure"
+      }
+    ]
+  },
+  "blob_crab": {
+    "label": "EBS snow crab abundance",
+    "unit": "Abundance index (relative, 2018=100)",
+    "source": "Szuwalski et al. 2023 Science (NEEDS PRIMARY-SOURCE VERIFICATION)",
+    "verified": false,
+    "note": "Relative index, 2018=100. The widely cited figure is ~10 billion crab lost 2018-2021, attributed to heatwave-driven starvation. Absolute figures pending verification against the Science abstract.",
+    "series": [
+      {
+        "year": 2015,
+        "v": 62
+      },
+      {
+        "year": 2016,
+        "v": 71
+      },
+      {
+        "year": 2017,
+        "v": 88
+      },
+      {
+        "year": 2018,
+        "v": 100
+      },
+      {
+        "year": 2019,
+        "v": 54
+      },
+      {
+        "year": 2021,
+        "v": 9
+      },
+      {
+        "year": 2022,
+        "v": 11
+      },
+      {
+        "year": 2023,
+        "v": 14
+      }
+    ],
+    "annotations": [
+      {
+        "year": 2018,
+        "v": 100,
+        "label": "Peak"
+      },
+      {
+        "year": 2021,
+        "v": 9,
+        "label": "Collapse"
+      }
+    ]
+  },
+  "gbr_bleach": {
+    "label": "GBR bleaching extent",
+    "unit": "% of surveyed reefs affected",
+    "source": "Hughes et al. 2017 Nature; AIMS LTMP; NOAA CRW 2024",
+    "verified": true,
+    "series": [
+      {
+        "year": 2002,
+        "v": 54
+      },
+      {
+        "year": 2006,
+        "v": 18
+      },
+      {
+        "year": 2008,
+        "v": 5
+      },
+      {
+        "year": 2010,
+        "v": 27
+      },
+      {
+        "year": 2011,
+        "v": 1
+      },
+      {
+        "year": 2016,
+        "v": 91
+      },
+      {
+        "year": 2017,
+        "v": 65
+      },
+      {
+        "year": 2020,
+        "v": 25
+      },
+      {
+        "year": 2022,
+        "v": 91
+      },
+      {
+        "year": 2024,
+        "v": 98
+      }
+    ],
+    "annotations": [
+      {
+        "year": 2016,
+        "v": 91,
+        "label": "Alert Lvl 2"
+      },
+      {
+        "year": 2024,
+        "v": 98,
+        "label": "4th Global"
+      }
+    ]
+  }
+}

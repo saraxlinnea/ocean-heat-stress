@@ -1,0 +1,22 @@
+{
+  "generated_utc": "2026-06-28T18:44:16.066526+00:00",
+  "oisst_dataset": "https://coastwatch.pfeg.noaa.gov/erddap/griddap/ncdcOisst21Agg_LonPM180",
+  "noaa_globaltemp_file": "https://www.ncei.noaa.gov/data/noaa-global-surface-temperature/v6/access/timeseries/aravg.ann.ocean.90S.90N.v6.0.0.202512.asc",
+  "climatology_baseline": "1991-2020",
+  "ersst_baseline": "1971-2000 (native ERSSTv6)",
+  "oisst_baseline": "1971-2000 (native OISST anom field)",
+  "mhw_definition": "Hobday et al. 2016: SST above the seasonally varying 90th percentile (11-day window, 31-day smoothing) for >= 5 consecutive days.",
+  "oisst_latency_days": 14,
+  "regions": {
+    "blob": {
+      "status": "fetch_failed"
+    },
+    "gbr": {
+      "status": "fetch_failed"
+    }
+  },
+  "method": "hobday",
+  "ersst_years": "1850-2025",
+  "ersst_status": "ok",
+  "oisst_global_status": "failed"
+}
