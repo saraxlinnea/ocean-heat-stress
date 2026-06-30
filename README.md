@@ -10,7 +10,7 @@ Live: [saraxlinnea.github.io/ocean-heat-stress](https://saraxlinnea.github.io/oc
 
 ## What it shows
 
-Ocean heat stress is not one number. It is a long-term warming trend, marine heatwave events layered on top of that trend, and the biological damage those events cause when they cross ecological thresholds. The dashboard tracks all three layers across five case studies.
+Ocean warming is the long-term trend. Marine heatwaves are the acute events layered on top. When those events cross ecological thresholds, they trigger measurable damage — fishery collapses, coral bleaching, intertidal die-offs. The dashboard tracks all three layers across five case studies.
 
 **2014–2016 Pacific Blob, Gulf of Alaska.** A persistent high-pressure ridge suppressed wind mixing across the Northeast Pacific for nearly three years. SSTs exceeded the 90th percentile baseline by up to 2.5°C. The 2017 AFSC bottom trawl survey documented a 71% decline in Pacific cod abundance relative to the 2015 survey (Barbeaux et al. 2020). The fishery closed in 2020, the first closure in its history. In the Bering Sea, a connected heatwave in 2018–19 drove the starvation-related disappearance of more than 10 billion snow crab (Szuwalski et al. 2023).
 

@@ -41,6 +41,9 @@ credentials.json
 # Jupyter
 .ipynb_checkpoints/
 
+# Local-only project notes (not for GitHub)
+docs/DECISIONS.md
+
 # Large raw data files (pipeline outputs in ./data/ are intentionally tracked)
 # *.nc
 # *.asc
