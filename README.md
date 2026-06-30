@@ -1,6 +1,6 @@
 # Ocean Heating: Events and Impacts
 
-Long-term ocean warming, marine heatwaves, and ecosystem consequences — built as a single deployable HTML file with D3.js. No framework, no build step.
+Long-term ocean warming, marine heatwaves, and ecosystem consequences built as a single deployable HTML file with D3.js. 
 
 Live: [saraxlinnea.github.io/ocean-heat-stress](https://saraxlinnea.github.io/ocean-heat-stress)
 
@@ -16,7 +16,11 @@ Ocean heat stress is not one number. It is a long-term warming trend, marine hea
 
 **2016 and 2024 GBR bleaching events.** The 2016 event bleached 91% of surveyed Great Barrier Reef structures, with the northern reef — the most remote and least disturbed — hit hardest. In April 2024, NOAA confirmed the fourth global coral bleaching event, the largest on record. The interval between severe bleaching events has collapsed from roughly a decade in the 1980s to near-annual since 2016.
 
-Additional case studies cover the 2011 Ningaloo Niña (Western Australia kelp collapse), the 2015–16 Tasman Sea heatwave, and the 2023 NE Atlantic basin-scale event.
+**2011 Ningaloo Niña (Western Australia kelp collapse)** 
+
+**2015–16 Tasman Sea heatwave** 
+
+**2023 NE Atlantic basin-scale event**
 
 ---
 
@@ -85,7 +89,7 @@ For step-by-step exploration and sanity-check plots, open [`notebooks/methods.ip
 
 ## Background
 
-Built by Sara Bower. B.S. Global Environmental Science, University of Hawaiʻi at Mānoa. Former NOAA STEM Fellow. Marine mammal stranding lab. Now working in EV charging infrastructure and writing about climate and energy policy for SF Chronicle, CalMatters, and KQED. This project sits at the overlap between my science background and what I want to do next.
+Built by Sara Bower. B.S. Global Environmental Science, University of Hawaiʻi at Mānoa. 
 
 ---
 
