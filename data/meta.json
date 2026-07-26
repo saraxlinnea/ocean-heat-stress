@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-07-25T10:20:17.455360+00:00",
+  "generated_utc": "2026-07-26T10:28:25.431307+00:00",
   "oisst_dataset": "https://coastwatch.pfeg.noaa.gov/erddap/griddap/ncdcOisst21Agg_LonPM180",
   "noaa_globaltemp_file": "https://www.ncei.noaa.gov/data/noaa-global-surface-temperature/v6/access/timeseries/aravg.ann.ocean.90S.90N.v6.0.0.202512.asc",
   "climatology_baseline": "1991-2020",
