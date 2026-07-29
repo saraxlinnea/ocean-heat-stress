@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-07-26T10:28:25.431307+00:00",
+  "generated_utc": "2026-07-29T16:45:40.682213+00:00",
   "oisst_dataset": "https://coastwatch.pfeg.noaa.gov/erddap/griddap/ncdcOisst21Agg_LonPM180",
   "noaa_globaltemp_file": "https://www.ncei.noaa.gov/data/noaa-global-surface-temperature/v6/access/timeseries/aravg.ann.ocean.90S.90N.v6.0.0.202512.asc",
   "climatology_baseline": "1991-2020",
@@ -9,14 +9,16 @@
   "oisst_latency_days": 14,
   "regions": {
     "blob": {
-      "status": "fetch_failed"
+      "status": "fetch_failed",
+      "error": "setting an array element with a sequence."
     },
     "gbr": {
-      "status": "fetch_failed"
+      "status": "fetch_failed",
+      "error": "setting an array element with a sequence."
     }
   },
   "method": "hobday",
-  "ersst_years": "1850-2025",
-  "ersst_status": "ok",
-  "oisst_global_status": "failed"
+  "ersst_status": "failed",
+  "oisst_global_years": "1982-2025",
+  "oisst_global_status": "ok"
 }
