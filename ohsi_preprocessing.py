@@ -120,11 +120,28 @@ def save(data, filename):
     return path
 
 
-def get(url, timeout=120, **kwargs):
-    """HTTP GET with a readable error if it fails."""
-    resp = requests.get(url, timeout=timeout, **kwargs)
-    resp.raise_for_status()
-    return resp
+def get(url, timeout=120, max_attempts=1, retry_statuses=None, **kwargs):
+    """HTTP GET with optional retries (used for flaky NCEI)."""
+    retry_statuses = retry_statuses or set()
+    last_err = None
+    for attempt in range(1, max_attempts + 1):
+        try:
+            resp = requests.get(url, timeout=timeout, **kwargs)
+            if resp.status_code in retry_statuses:
+                resp.raise_for_status()
+            resp.raise_for_status()
+            return resp
+        except requests.exceptions.RequestException as e:
+            last_err = e
+            retryable = isinstance(e, (requests.exceptions.Timeout, requests.exceptions.ConnectionError))
+            if isinstance(e, requests.exceptions.HTTPError) and e.response is not None:
+                retryable = e.response.status_code in retry_statuses
+            if attempt >= max_attempts or not retryable:
+                break
+            wait = 5 * attempt + random.uniform(0, 2)
+            print(f"    GET attempt {attempt}/{max_attempts} failed ({e}); retry in {wait:.0f}s...")
+            time.sleep(wait)
+    raise last_err
 
 
 def _erddap_retryable(exc):
@@ -216,7 +233,7 @@ def fetch_noaa_globaltemp():
     print(f"    {url}")
 
     try:
-        resp = get(url, timeout=60)
+        resp = get(url, timeout=60, max_attempts=4, retry_statuses={429, 500, 502, 503, 504})
     except requests.exceptions.HTTPError as e:
         if e.response.status_code == 404:
             print(f"    404: file may have been updated. Check the directory:")
@@ -388,6 +405,13 @@ def fetch_regional_sst(key):
 
 def spatial_average(df):
     out = area_weighted_by_time(df, "sst")
+    if out.empty:
+        return out
+    # Normalize to timezone-naive UTC noon timestamps, sorted, one row per day
+    out = out.copy()
+    out["date"] = pd.to_datetime(out["date"], utc=True).dt.tz_localize(None)
+    out = out.sort_values("date").drop_duplicates("date", keep="last").reset_index(drop=True)
+    out["sst"] = out["sst"].astype(float)
     return out
 
 
@@ -398,32 +422,87 @@ def detect_mhw(daily_df):
         print("    marineHeatWaves not installed — using simplified fallback")
         return detect_mhw_simple(daily_df), None
 
-    t     = daily_df["date"].values
-    sst   = daily_df["sst"].values
-    t_ord = np.array([pd.Timestamp(d).toordinal() for d in t])
+    # marineHeatWaves still references np.NaN (removed in NumPy 2)
+    if not hasattr(np, "NaN"):
+        np.NaN = np.nan
 
-    mhws, clim = mhw.detect(
-        t_ord, sst,
-        climatologyPeriod=[CLIM_START, CLIM_END],
-        pctile=MHW_PCTILE,
-        windowHalfWidth=MHW_WINDOW,
-        smoothPercentileWidth=MHW_SMOOTH,
-        minDuration=MHW_MIN_DAYS,
-    )
-    cats  = {1: "Moderate", 2: "Strong", 3: "Severe", 4: "Extreme"}
+    df = daily_df.copy().reset_index(drop=True)
+    df["date"] = pd.to_datetime(df["date"], utc=True).dt.tz_localize(None)
+    df = df.sort_values("date").drop_duplicates("date", keep="last")
+    # Ensure contiguous daily series for Hobday detection
+    full = pd.date_range(df["date"].min().normalize(), df["date"].max().normalize(), freq="D")
+    df = (df.set_index("date")
+            .reindex(full)
+            .rename_axis("date")
+            .reset_index())
+    df["sst"] = pd.to_numeric(df["sst"], errors="coerce")
+
+    years = df["date"].dt.year
+    clim_start = max(CLIM_START, int(years.min()))
+    clim_end = min(CLIM_END, int(years.max()))
+    if clim_end < clim_start:
+        print("    Climatology window empty; using simplified fallback")
+        return detect_mhw_simple(daily_df), None
+
+    t_ord = np.asarray([d.toordinal() for d in df["date"]], dtype=np.int64)
+    sst = np.asarray(df["sst"].values, dtype=np.float64)
+
+    try:
+        mhws, clim = mhw.detect(
+            t_ord, sst,
+            climatologyPeriod=[clim_start, clim_end],
+            pctile=MHW_PCTILE,
+            windowHalfWidth=MHW_WINDOW,
+            smoothPercentileWidth=MHW_SMOOTH,
+            minDuration=MHW_MIN_DAYS,
+        )
+    except Exception as e:
+        print(f"    marineHeatWaves.detect failed ({e}); using simplified fallback")
+        return detect_mhw_simple(daily_df), None
+
+    cat_name_to_num = {"Moderate": 1, "Strong": 2, "Severe": 3, "Extreme": 4}
+    cats = {1: "Moderate", 2: "Strong", 3: "Severe", 4: "Extreme"}
     events = []
-    for i in range(len(mhws["time_start"])):
-        cn = int(mhws["category"][i]) if "category" in mhws else None
-        events.append({
-            "start":          str(pd.Timestamp.fromordinal(int(mhws["time_start"][i])))[:10],
-            "end":            str(pd.Timestamp.fromordinal(int(mhws["time_end"][i])))[:10],
-            "peak_date":      str(pd.Timestamp.fromordinal(int(mhws["time_peak"][i])))[:10],
-            "peak_intensity": round(float(mhws["intensity_max"][i]), 2),
-            "mean_intensity": round(float(mhws["intensity_mean"][i]), 2),
-            "duration_days":  int(mhws["duration"][i]),
-            "category":       cn,
-            "category_name":  cats.get(cn),
-        })
+    n = len(mhws.get("time_start", []))
+    for i in range(n):
+        try:
+            cn_raw = mhws["category"][i] if "category" in mhws else None
+            if isinstance(cn_raw, str):
+                cn = cat_name_to_num.get(cn_raw)
+            elif cn_raw is None or isinstance(cn_raw, (list, np.ndarray)):
+                cn = None
+            else:
+                cn = int(cn_raw)
+            events.append({
+                "start":          str(pd.Timestamp.fromordinal(int(mhws["time_start"][i])))[:10],
+                "end":            str(pd.Timestamp.fromordinal(int(mhws["time_end"][i])))[:10],
+                "peak_date":      str(pd.Timestamp.fromordinal(int(mhws["time_peak"][i])))[:10],
+                "peak_intensity": round(float(np.asarray(mhws["intensity_max"][i]).ravel()[0]), 2),
+                "mean_intensity": round(float(np.asarray(mhws["intensity_mean"][i]).ravel()[0]), 2),
+                "duration_days":  int(mhws["duration"][i]),
+                "category":       cn,
+                "category_name":  cats.get(cn) if cn is not None else (cn_raw if isinstance(cn_raw, str) else None),
+            })
+        except Exception as e:
+            print(f"    Skipping MHW event {i}: {e}")
+
+    # Align seas to the (possibly reindexed) series used for detection
+    if clim is not None and "seas" in clim:
+        try:
+            seas = np.asarray(clim["seas"], dtype=np.float64).ravel()
+            if len(seas) == len(df):
+                # Map seas onto the original daily_df dates for monthly_anomaly
+                aligned = pd.DataFrame({
+                    "date": df["date"].values,
+                    "sst": sst,
+                    "seas": seas,
+                }).dropna(subset=["sst"])
+                clim = {"seas": aligned["seas"].to_numpy(dtype=np.float64),
+                        "_aligned_daily": aligned[["date", "sst"]]}
+            else:
+                clim = None
+        except Exception:
+            clim = None
     return events, clim
 
 
@@ -454,18 +533,37 @@ def detect_mhw_simple(daily_df):
 
 
 def monthly_anomaly(daily_df, clim):
-    df = daily_df.copy()
-    if clim is not None and "seas" in clim:
-        df["anom"] = df["sst"].values - clim["seas"]
+    # Prefer clim-aligned daily series when detect_mhw provided one
+    if clim is not None and "_aligned_daily" in clim:
+        df = clim["_aligned_daily"].copy()
+        seas = np.asarray(clim["seas"], dtype=np.float64).ravel()
+        sst = np.asarray(df["sst"].values, dtype=np.float64).ravel()
+        if len(seas) == len(sst):
+            df["anom"] = sst - seas
+        else:
+            df["anom"] = sst - np.nanmean(sst)
     else:
-        df["anom"] = df["sst"] - df["sst"].mean()
+        df = daily_df.copy().reset_index(drop=True)
+        df["date"] = pd.to_datetime(df["date"], utc=True).dt.tz_localize(None)
+        sst = np.asarray(df["sst"].values, dtype=np.float64).ravel()
+        if clim is not None and "seas" in clim:
+            seas = np.asarray(clim["seas"], dtype=np.float64).ravel()
+            if len(seas) == len(sst):
+                df["anom"] = sst - seas
+            else:
+                print(f"    clim seas length {len(seas)} != sst {len(sst)}; using series mean anomaly")
+                df["anom"] = sst - np.nanmean(sst)
+        else:
+            df["anom"] = sst - np.nanmean(sst)
+
+    df["date"] = pd.to_datetime(df["date"])
     m = (df.set_index("date")["anom"]
            .resample("MS").mean()
            .reset_index())
     m.columns = ["date", "anom"]
     m["anom"]  = m["anom"].round(2)
     return [{"date": str(r["date"])[:10], "anom": float(r["anom"])}
-            for _, r in m.iterrows()]
+            for _, r in m.iterrows() if pd.notna(r["anom"])]
 
 
 # ── ECOSYSTEM DATA (survey-based, hardcoded from literature) ──────────────────
