@@ -40,6 +40,8 @@ OUTPUTS (written to ./data/):
 import os
 import json
 import re
+import time
+import random
 import requests
 import pandas as pd
 import numpy as np
@@ -68,6 +70,16 @@ NOAA_OCEAN_FILE = "aravg.ann.ocean.90S.90N.v6.0.0.202512.asc"
 # single annual mean. This is the satellite-era independent line.
 ERDDAP_BASE   = "https://coastwatch.pfeg.noaa.gov/erddap/griddap"
 OISST_DATASET = "ncdcOisst21Agg_LonPM180"
+
+# ERDDAP often returns 408 on large queries; retry with backoff before giving up
+ERDDAP_MAX_ATTEMPTS   = 4
+ERDDAP_BACKOFF_BASE_S = 15
+ERDDAP_RETRY_STATUSES = {408, 429, 500, 502, 503, 504}
+ERDDAP_TIMEOUT_S      = 180
+OISST_GLOBAL_STRIDE   = 8
+OISST_REGION_STRIDE   = 8
+OISST_MIN_GLOBAL_YEARS = 20  # below this, treat global OISST as failed
+OISST_GLOBAL_START    = 1981
 
 # Hobday et al. 2016 parameters (used for regional case studies)
 CLIM_START   = 1991
@@ -113,6 +125,75 @@ def get(url, timeout=120, **kwargs):
     resp = requests.get(url, timeout=timeout, **kwargs)
     resp.raise_for_status()
     return resp
+
+
+def _erddap_retryable(exc):
+    """True for ERDDAP timeouts, connection drops, and overloaded-server HTTP codes."""
+    if isinstance(exc, (requests.exceptions.Timeout, requests.exceptions.ConnectionError)):
+        return True
+    if isinstance(exc, requests.exceptions.HTTPError) and exc.response is not None:
+        return exc.response.status_code in ERDDAP_RETRY_STATUSES
+    return False
+
+
+def erddap_get(url, timeout=ERDDAP_TIMEOUT_S, max_attempts=ERDDAP_MAX_ATTEMPTS):
+    """
+    GET from NOAA ERDDAP with exponential backoff.
+
+    Retries on 408/429/5xx and network timeouts. Does not retry 4xx client errors
+    other than 408/429.
+    """
+    last_err = None
+    for attempt in range(1, max_attempts + 1):
+        try:
+            resp = requests.get(url, timeout=timeout)
+            if resp.status_code in ERDDAP_RETRY_STATUSES:
+                resp.raise_for_status()
+            resp.raise_for_status()
+            return resp
+        except requests.exceptions.RequestException as e:
+            last_err = e
+            if attempt >= max_attempts or not _erddap_retryable(e):
+                break
+            wait = ERDDAP_BACKOFF_BASE_S * (2 ** (attempt - 1)) + random.uniform(0, 5)
+            detail = str(e)
+            if isinstance(e, requests.exceptions.HTTPError) and e.response is not None:
+                detail = f"HTTP {e.response.status_code}"
+            print(f"    ERDDAP attempt {attempt}/{max_attempts} failed ({detail}); "
+                  f"retry in {wait:.0f}s...")
+            time.sleep(wait)
+    raise last_err
+
+
+def parse_erddap_csv(text, value_col):
+    """Parse ERDDAP CSV (header + units row + data) into a DataFrame."""
+    lines = text.split("\n")
+    if len(lines) < 3:
+        raise ValueError("ERDDAP response too short to parse")
+    data_lines = [lines[0]] + [l for l in lines[2:] if l.strip()]
+    df = pd.read_csv(StringIO("\n".join(data_lines)))
+    df.columns = [c.strip() for c in df.columns]
+    if "time" not in df.columns or value_col not in df.columns:
+        raise ValueError(f"ERDDAP CSV missing expected columns (need time, {value_col})")
+    df["time"] = pd.to_datetime(df["time"])
+    df[value_col] = pd.to_numeric(df[value_col], errors="coerce")
+    df = df.dropna(subset=[value_col])
+    return df
+
+
+def area_weighted_by_time(df, value_col):
+    """Area-weight grid cells by cos(lat) and average per timestep."""
+    work = df.dropna(subset=[value_col, "latitude"]).copy()
+    if work.empty:
+        return pd.DataFrame(columns=["date", value_col])
+    work["w"] = np.cos(np.radians(work["latitude"]))
+    rows = []
+    for t, g in work.groupby("time", sort=True):
+        w = g["w"].values
+        if np.nansum(w) == 0:
+            continue
+        rows.append({"date": t, value_col: float(np.average(g[value_col].values, weights=w))})
+    return pd.DataFrame(rows)
 
 
 # ── GLOBAL SERIES: NOAAGlobalTemp ERSSTv6 ─────────────────────────────────────
@@ -170,113 +251,143 @@ def fetch_noaa_globaltemp():
 
 # ── GLOBAL SERIES: OISST v2.1 satellite-era ───────────────────────────────────
 
+def _oisst_global_year_url(year, stride=OISST_GLOBAL_STRIDE):
+    """One mid-month sample per year slice (day-of-year stride 30 ≈ monthly)."""
+    t0 = f"{year}-01-15T12:00:00Z"
+    t1 = f"{year}-12-15T12:00:00Z"
+    return (
+        f"{ERDDAP_BASE}/{OISST_DATASET}.csv"
+        f"?anom[({t0}):30:({t1})]"
+        f"[0][(-89.875):{stride}:(89.875)][(-179.875):{stride}:(179.875)]"
+    )
+
+
 def fetch_oisst_global_annual():
     """
-    Fetch global OISST v2.1 anomaly from ERDDAP and derive annual means.
+    Fetch global OISST v2.1 anomaly from ERDDAP in yearly chunks and derive
+    annual means. Chunking avoids one megafetch that often 408s on ERDDAP.
 
-    We use a coarse spatial stride (stride=8, ~2 degree cells) to keep
-    the request size manageable. Area-weighted with cos(lat).
-
-    This gives us the satellite-only line starting in 1981, which uses
-    a denser and more spatially complete observing system than the
-    pre-satellite ERSSTv6 reconstruction.
-
-    Returns list of {year, anom} dicts covering 1981-present.
+    Uses coarse spatial stride (~2°) and area-weights with cos(lat).
+    Returns list of {year, anom} or None on soft failure.
     """
-    print(f"  Fetching OISST v2.1 global annual series...")
-
-    # Fetch annual-ish: one reading per month globally, stride=8 spatially
-    # We fetch the `anom` field which NOAA computes against 1971-2000
+    print(f"  Fetching OISST v2.1 global annual series (yearly chunks)...")
     end_year = datetime.now(timezone.utc).year
-    end_date = f"{end_year}-12-15T12:00:00Z"
-    url = (
-        f"{ERDDAP_BASE}/{OISST_DATASET}.csv"
-        f"?anom[(1981-01-15T12:00:00Z):365:({end_date})]"
-        f"[0][(-89.875):8:(89.875)][(-179.875):8:(179.875)]"
-    )
-    print(f"    {url[:80]}...")
+    years = list(range(OISST_GLOBAL_START, end_year + 1))
+    frames = []
+    skipped = []
 
-    try:
-        resp = get(url, timeout=300)
-    except requests.exceptions.RequestException as e:
-        print(f"    ERDDAP fetch failed: {e}")
-        print(f"    Skipping OISST global series — dashboard uses ERSSTv6 only.")
+    for year in years:
+        url = _oisst_global_year_url(year)
+        try:
+            resp = erddap_get(url, timeout=ERDDAP_TIMEOUT_S)
+            df = parse_erddap_csv(resp.text, "anom")
+            if df.empty:
+                skipped.append(year)
+                print(f"    {year}: empty after parse, skipping")
+                continue
+            frames.append(df)
+            print(f"    {year}: {len(df):,} cells")
+        except Exception as e:
+            skipped.append(year)
+            print(f"    {year}: failed ({e}), skipping")
+
+    if not frames:
+        print("    No yearly chunks succeeded — skipping OISST global series.")
         return None
 
-    # ERDDAP CSV: row 0 = col names, row 1 = units, row 2+ = data
-    lines = resp.text.split("\n")
-    data_lines = [lines[0]] + [l for l in lines[2:] if l.strip()]
-    df = pd.read_csv(StringIO("\n".join(data_lines)))
-    df.columns = [c.strip() for c in df.columns]
-    df["time"] = pd.to_datetime(df["time"])
-    df["anom"] = pd.to_numeric(df["anom"], errors="coerce")
-    df = df.dropna(subset=["anom"])
+    try:
+        df = pd.concat(frames, ignore_index=True)
+        daily = area_weighted_by_time(df, "anom")
+        if daily.empty:
+            print("    Area-weighted series empty — skipping OISST global.")
+            return None
+        daily["year"] = daily["date"].dt.year
+        annual = (daily.groupby("year")["anom"].mean().reset_index())
+        annual["anom"] = annual["anom"].round(3)
+        records = [{"year": int(r["year"]), "anom": float(r["anom"])}
+                   for _, r in annual.iterrows()]
+    except Exception as e:
+        print(f"    OISST global aggregation failed: {e}")
+        return None
 
-    # Area-weight by cos(latitude)
-    df["w"] = np.cos(np.radians(df["latitude"]))
-    daily = (df.groupby("time")
-               .apply(lambda x: np.average(x["anom"], weights=x["w"]))
-               .reset_index())
-    daily.columns = ["date", "anom"]
-    daily["year"] = daily["date"].dt.year
+    if len(records) < OISST_MIN_GLOBAL_YEARS:
+        print(f"    Only {len(records)} years recovered (need ≥{OISST_MIN_GLOBAL_YEARS}); "
+              f"treating as failed. Skipped: {skipped[:8]}{'...' if len(skipped)>8 else ''}")
+        return None
 
-    annual = (daily.groupby("year")["anom"]
-                   .mean()
-                   .reset_index())
-    annual["anom"] = annual["anom"].round(3)
-
-    records = [{"year": int(r["year"]), "anom": float(r["anom"])}
-               for _, r in annual.iterrows()]
-
-    print(f"    {len(records)} years, {records[0]['year']} to {records[-1]['year']}")
+    print(f"    {len(records)} years, {records[0]['year']} to {records[-1]['year']}"
+          f" (skipped {len(skipped)} year-chunk(s))")
     print(f"    Baseline: 1971-2000 (native OISST anom field)")
     return records
 
 
 # ── REGIONAL SST + MHW ────────────────────────────────────────────────────────
 
-def build_erddap_url(key, stride=4):
+def build_erddap_url(key, year, stride=OISST_REGION_STRIDE):
+    """Daily SST for one calendar year over the regional bbox."""
     r = REGIONS[key]
     lon0, lon1 = r["lon"]
     lat0, lat1 = r["lat"]
-    t0, t1 = r["date_start"], r["date_end"]
+    t0 = f"{year}-01-01T12:00:00Z"
+    t1 = f"{year}-12-31T12:00:00Z"
     return (
         f"{ERDDAP_BASE}/{OISST_DATASET}.csv"
-        f"?sst[({t0}T12:00:00Z):1:({t1}T12:00:00Z)]"
+        f"?sst[({t0}):1:({t1})]"
         f"[0][({lat0}):{stride}:({lat1})]"
         f"[({lon0}):{stride}:({lon1})]"
     )
 
 
 def fetch_regional_sst(key):
-    url = build_erddap_url(key)
-    print(f"  Fetching regional SST: {REGIONS[key]['name']}...")
-    print(f"    {url[:80]}...")
-    try:
-        resp = get(url, timeout=300)
-    except requests.exceptions.RequestException as e:
-        print(f"    ERROR: {e}")
-        print(f"    Backup: CMEMS (marine.copernicus.eu)")
+    """
+    Fetch regional daily SST in yearly chunks (spatial stride=8).
+    Returns a DataFrame or None on soft failure.
+    """
+    r = REGIONS[key]
+    y0 = int(r["date_start"][:4])
+    y1 = int(r["date_end"][:4])
+    print(f"  Fetching regional SST: {r['name']} ({y0}–{y1}, yearly chunks, stride={OISST_REGION_STRIDE})...")
+    frames = []
+    skipped = []
+
+    for year in range(y0, y1 + 1):
+        url = build_erddap_url(key, year)
+        try:
+            resp = erddap_get(url, timeout=ERDDAP_TIMEOUT_S)
+            df = parse_erddap_csv(resp.text, "sst")
+            if df.empty:
+                skipped.append(year)
+                print(f"    {year}: empty, skipping")
+                continue
+            frames.append(df)
+            print(f"    {year}: {len(df):,} cells")
+        except Exception as e:
+            skipped.append(year)
+            print(f"    {year}: failed ({e}), skipping")
+
+    if not frames:
+        print(f"    No regional chunks succeeded for {key}.")
         return None
 
-    lines = resp.text.split("\n")
-    data_lines = [lines[0]] + [l for l in lines[2:] if l.strip()]
-    df = pd.read_csv(StringIO("\n".join(data_lines)))
-    df.columns = [c.strip() for c in df.columns]
-    df["time"] = pd.to_datetime(df["time"])
-    df["sst"] = pd.to_numeric(df["sst"], errors="coerce")
-    df = df.dropna(subset=["sst"])
-    print(f"    Got {len(df):,} grid-cell-days")
+    try:
+        df = pd.concat(frames, ignore_index=True)
+    except Exception as e:
+        print(f"    Concat failed for {key}: {e}")
+        return None
+
+    # Need enough years to cover climatology window for Hobday
+    years_present = sorted(df["time"].dt.year.unique())
+    if len(years_present) < 10:
+        print(f"    Only {len(years_present)} years of regional SST; treating as failed.")
+        return None
+
+    print(f"    Got {len(df):,} grid-cell-days across {len(years_present)} years "
+          f"(skipped {len(skipped)} year-chunk(s))")
     return df
 
 
 def spatial_average(df):
-    df = df.copy()
-    df["w"] = np.cos(np.radians(df["latitude"]))
-    out = (df.groupby("time")
-             .apply(lambda x: np.average(x["sst"], weights=x["w"]))
-             .reset_index())
-    out.columns = ["date", "sst"]
+    out = area_weighted_by_time(df, "sst")
     return out
 
 
@@ -449,6 +560,7 @@ def main():
     # ── Step 1: Global series ──────────────────────────────────────────────
     print("[GLOBAL] Long-term ocean warming series")
     print("-" * 40)
+    print("Note: green Actions ≠ all layers ok. Dashboard status bar is source of truth.\n")
     try:
         ersst = fetch_noaa_globaltemp()
         save(ersst, "global_ersst.json")
@@ -459,7 +571,11 @@ def main():
         meta["ersst_status"] = "failed"
     print()
 
-    oisst_global = fetch_oisst_global_annual()
+    try:
+        oisst_global = fetch_oisst_global_annual()
+    except Exception as e:
+        print(f"  OISST global unexpected error: {e}")
+        oisst_global = None
     if oisst_global:
         save(oisst_global, "global_oisst.json")
         meta["oisst_global_years"] = f"{oisst_global[0]['year']}-{oisst_global[-1]['year']}"
@@ -472,38 +588,47 @@ def main():
     for key, region in REGIONS.items():
         print(f"[{key.upper()}] {region['name']}")
         print("-" * 40)
+        try:
+            raw = fetch_regional_sst(key)
+            if raw is None:
+                meta["regions"][key] = {"status": "fetch_failed", "error": "no data after chunked fetch"}
+                print()
+                continue
 
-        raw = fetch_regional_sst(key)
-        if raw is None:
-            meta["regions"][key] = {"status": "fetch_failed"}
-            continue
+            daily = spatial_average(raw)
+            if daily is None or daily.empty:
+                meta["regions"][key] = {"status": "fetch_failed", "error": "empty spatial average"}
+                print()
+                continue
 
-        daily  = spatial_average(raw)
-        result = detect_mhw(daily)
+            result = detect_mhw(daily)
+            if isinstance(result, tuple):
+                events, clim = result
+            else:
+                events, clim = result, None
+                meta["method"] = "simplified"
 
-        if isinstance(result, tuple):
-            events, clim = result
-        else:
-            events, clim = result, None
-            meta["method"] = "simplified"
+            print(f"  MHW events detected: {len(events)}")
+            for e in events[:6]:
+                cat = f" [{e['category_name']}]" if e.get("category_name") else ""
+                print(f"    {e['start']} to {e['end']}  "
+                      f"+{e['peak_intensity']}°C  {e['duration_days']}d{cat}")
 
-        print(f"  MHW events detected: {len(events)}")
-        for e in events[:6]:
-            cat = f" [{e['category_name']}]" if e.get("category_name") else ""
-            print(f"    {e['start']} to {e['end']}  "
-                  f"+{e['peak_intensity']}°C  {e['duration_days']}d{cat}")
+            monthly = monthly_anomaly(daily, clim)
+            save(monthly, f"{key}_sst.json")
+            save(events,  f"{key}_mhw.json")
 
-        monthly = monthly_anomaly(daily, clim)
-        save(monthly, f"{key}_sst.json")
-        save(events,  f"{key}_mhw.json")
-
-        meta["regions"][key] = {
-            "name":     region["name"],
-            "lon":      region["lon"],
-            "lat":      region["lat"],
-            "n_events": len(events),
-            "status":   "ok",
-        }
+            meta["regions"][key] = {
+                "name":     region["name"],
+                "lon":      region["lon"],
+                "lat":      region["lat"],
+                "n_events": len(events),
+                "status":   "ok",
+            }
+        except Exception as e:
+            err = str(e)[:200]
+            print(f"  Regional pipeline failed: {err}")
+            meta["regions"][key] = {"status": "fetch_failed", "error": err}
         print()
 
     # ── Step 3: Ecosystem (static) ─────────────────────────────────────────
@@ -515,6 +640,11 @@ def main():
     # ── Summary ────────────────────────────────────────────────────────────
     print()
     print("Done.")
+    print(f"  ERSST: {meta.get('ersst_status')}")
+    print(f"  OISST global: {meta.get('oisst_global_status')}")
+    for key, info in meta.get("regions", {}).items():
+        print(f"  {key}: {info.get('status')}"
+              + (f" ({info['error']})" if info.get("error") else ""))
     unverified = [k for k, v in ECOSYSTEM.items() if not v.get("verified")]
     if unverified:
         print()
@@ -522,6 +652,10 @@ def main():
         for k in unverified:
             print(f"  {k}: {ECOSYSTEM[k]['source']}")
 
+    # Soft ERDDAP failures must not fail the Actions job.
+    # Status bar / meta.json remain the source of truth for layer health.
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
