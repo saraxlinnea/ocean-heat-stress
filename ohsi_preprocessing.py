@@ -407,9 +407,10 @@ def spatial_average(df):
     out = area_weighted_by_time(df, "sst")
     if out.empty:
         return out
-    # Normalize to timezone-naive UTC noon timestamps, sorted, one row per day
+    # Normalize to calendar dates (midnight). ERDDAP times are often 12:00 UTC;
+    # reindexing to a midnight daily range would miss every row and yield all-NaN.
     out = out.copy()
-    out["date"] = pd.to_datetime(out["date"], utc=True).dt.tz_localize(None)
+    out["date"] = pd.to_datetime(out["date"], utc=True).dt.tz_localize(None).dt.normalize()
     out = out.sort_values("date").drop_duplicates("date", keep="last").reset_index(drop=True)
     out["sst"] = out["sst"].astype(float)
     return out
@@ -427,22 +428,27 @@ def detect_mhw(daily_df):
         np.NaN = np.nan
 
     df = daily_df.copy().reset_index(drop=True)
-    df["date"] = pd.to_datetime(df["date"], utc=True).dt.tz_localize(None)
+    df["date"] = pd.to_datetime(df["date"], utc=True).dt.tz_localize(None).dt.normalize()
     df = df.sort_values("date").drop_duplicates("date", keep="last")
     # Ensure contiguous daily series for Hobday detection
-    full = pd.date_range(df["date"].min().normalize(), df["date"].max().normalize(), freq="D")
+    full = pd.date_range(df["date"].min(), df["date"].max(), freq="D")
     df = (df.set_index("date")
             .reindex(full)
             .rename_axis("date")
             .reset_index())
     df["sst"] = pd.to_numeric(df["sst"], errors="coerce")
 
+    n_valid = int(df["sst"].notna().sum())
+    if n_valid < 365:
+        print(f"    Too few valid SST days ({n_valid}); using simplified fallback")
+        return detect_mhw_simple(daily_df.dropna(subset=["sst"])), None
+
     years = df["date"].dt.year
     clim_start = max(CLIM_START, int(years.min()))
     clim_end = min(CLIM_END, int(years.max()))
     if clim_end < clim_start:
         print("    Climatology window empty; using simplified fallback")
-        return detect_mhw_simple(daily_df), None
+        return detect_mhw_simple(daily_df.dropna(subset=["sst"])), None
 
     t_ord = np.asarray([d.toordinal() for d in df["date"]], dtype=np.int64)
     sst = np.asarray(df["sst"].values, dtype=np.float64)
@@ -458,7 +464,7 @@ def detect_mhw(daily_df):
         )
     except Exception as e:
         print(f"    marineHeatWaves.detect failed ({e}); using simplified fallback")
-        return detect_mhw_simple(daily_df), None
+        return detect_mhw_simple(daily_df.dropna(subset=["sst"])), None
 
     cat_name_to_num = {"Moderate": 1, "Strong": 2, "Severe": 3, "Extreme": 4}
     cats = {1: "Moderate", 2: "Strong", 3: "Severe", 4: "Extreme"}
@@ -486,19 +492,21 @@ def detect_mhw(daily_df):
         except Exception as e:
             print(f"    Skipping MHW event {i}: {e}")
 
-    # Align seas to the (possibly reindexed) series used for detection
+    # Align seas to valid (non-NaN) days for monthly anomaly
     if clim is not None and "seas" in clim:
         try:
             seas = np.asarray(clim["seas"], dtype=np.float64).ravel()
             if len(seas) == len(df):
-                # Map seas onto the original daily_df dates for monthly_anomaly
                 aligned = pd.DataFrame({
                     "date": df["date"].values,
                     "sst": sst,
                     "seas": seas,
                 }).dropna(subset=["sst"])
-                clim = {"seas": aligned["seas"].to_numpy(dtype=np.float64),
-                        "_aligned_daily": aligned[["date", "sst"]]}
+                if aligned.empty:
+                    clim = None
+                else:
+                    clim = {"seas": aligned["seas"].to_numpy(dtype=np.float64),
+                            "_aligned_daily": aligned[["date", "sst"]].copy()}
             else:
                 clim = None
         except Exception:
@@ -507,7 +515,11 @@ def detect_mhw(daily_df):
 
 
 def detect_mhw_simple(daily_df):
-    df  = daily_df.copy().reset_index(drop=True)
+    df = daily_df.copy().reset_index(drop=True)
+    df["date"] = pd.to_datetime(df["date"], utc=True).dt.tz_localize(None).dt.normalize()
+    df = df.dropna(subset=["sst"]).sort_values("date").reset_index(drop=True)
+    if df.empty:
+        return []
     thr = np.nanpercentile(df["sst"].values, MHW_PCTILE)
     df["above"] = df["sst"] > thr
     events, in_evt, s = [], False, None
@@ -544,7 +556,8 @@ def monthly_anomaly(daily_df, clim):
             df["anom"] = sst - np.nanmean(sst)
     else:
         df = daily_df.copy().reset_index(drop=True)
-        df["date"] = pd.to_datetime(df["date"], utc=True).dt.tz_localize(None)
+        df["date"] = pd.to_datetime(df["date"], utc=True).dt.tz_localize(None).dt.normalize()
+        df = df.dropna(subset=["sst"])
         sst = np.asarray(df["sst"].values, dtype=np.float64).ravel()
         if clim is not None and "seas" in clim:
             seas = np.asarray(clim["seas"], dtype=np.float64).ravel()
@@ -556,7 +569,10 @@ def monthly_anomaly(daily_df, clim):
         else:
             df["anom"] = sst - np.nanmean(sst)
 
-    df["date"] = pd.to_datetime(df["date"])
+    if df.empty or "anom" not in df.columns:
+        return []
+
+    df["date"] = pd.to_datetime(df["date"]).dt.normalize()
     m = (df.set_index("date")["anom"]
            .resample("MS").mean()
            .reset_index())
@@ -713,6 +729,16 @@ def main():
                       f"+{e['peak_intensity']}°C  {e['duration_days']}d{cat}")
 
             monthly = monthly_anomaly(daily, clim)
+            print(f"  Monthly anomaly points: {len(monthly)}")
+            if not monthly:
+                meta["regions"][key] = {
+                    "status": "fetch_failed",
+                    "error": "monthly anomaly series empty after MHW/climatology step",
+                }
+                print("  Refusing to save empty regional SST series.")
+                print()
+                continue
+
             save(monthly, f"{key}_sst.json")
             save(events,  f"{key}_mhw.json")
 
@@ -721,6 +747,7 @@ def main():
                 "lon":      region["lon"],
                 "lat":      region["lat"],
                 "n_events": len(events),
+                "n_months": len(monthly),
                 "status":   "ok",
             }
         except Exception as e:
