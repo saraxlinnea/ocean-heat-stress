@@ -1,1 +1,412 @@
-[]
+[
+  {
+    "start": "1997-08-02",
+    "end": "1997-08-08",
+    "peak_date": "1997-08-06",
+    "peak_intensity": 1.64,
+    "mean_intensity": 1.52,
+    "duration_days": 7,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "1997-08-27",
+    "end": "1997-08-31",
+    "peak_date": "1997-08-30",
+    "peak_intensity": 1.59,
+    "mean_intensity": 1.5,
+    "duration_days": 5,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "1998-03-20",
+    "end": "1998-03-24",
+    "peak_date": "1998-03-23",
+    "peak_intensity": 1.06,
+    "mean_intensity": 1.0,
+    "duration_days": 5,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2002-11-07",
+    "end": "2002-11-12",
+    "peak_date": "2002-11-09",
+    "peak_intensity": 1.26,
+    "mean_intensity": 1.23,
+    "duration_days": 6,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2002-11-29",
+    "end": "2002-12-17",
+    "peak_date": "2002-12-10",
+    "peak_intensity": 1.4,
+    "mean_intensity": 1.27,
+    "duration_days": 19,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2003-02-26",
+    "end": "2003-03-08",
+    "peak_date": "2003-03-05",
+    "peak_intensity": 1.08,
+    "mean_intensity": 1.01,
+    "duration_days": 11,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2004-08-18",
+    "end": "2004-08-23",
+    "peak_date": "2004-08-21",
+    "peak_intensity": 1.43,
+    "mean_intensity": 1.37,
+    "duration_days": 6,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2005-05-07",
+    "end": "2005-05-11",
+    "peak_date": "2005-05-09",
+    "peak_intensity": 1.35,
+    "mean_intensity": 1.24,
+    "duration_days": 5,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2005-06-02",
+    "end": "2005-06-06",
+    "peak_date": "2005-06-03",
+    "peak_intensity": 1.49,
+    "mean_intensity": 1.43,
+    "duration_days": 5,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2005-06-14",
+    "end": "2005-06-18",
+    "peak_date": "2005-06-16",
+    "peak_intensity": 1.59,
+    "mean_intensity": 1.47,
+    "duration_days": 5,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2005-07-05",
+    "end": "2005-07-16",
+    "peak_date": "2005-07-12",
+    "peak_intensity": 1.79,
+    "mean_intensity": 1.6,
+    "duration_days": 12,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2005-08-06",
+    "end": "2005-08-10",
+    "peak_date": "2005-08-08",
+    "peak_intensity": 1.55,
+    "mean_intensity": 1.41,
+    "duration_days": 5,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2014-01-23",
+    "end": "2014-01-29",
+    "peak_date": "2014-01-25",
+    "peak_intensity": 1.15,
+    "mean_intensity": 1.04,
+    "duration_days": 7,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2014-05-21",
+    "end": "2014-05-28",
+    "peak_date": "2014-05-25",
+    "peak_intensity": 1.66,
+    "mean_intensity": 1.48,
+    "duration_days": 8,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2014-06-02",
+    "end": "2014-06-12",
+    "peak_date": "2014-06-07",
+    "peak_intensity": 1.58,
+    "mean_intensity": 1.44,
+    "duration_days": 11,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2014-07-14",
+    "end": "2014-07-18",
+    "peak_date": "2014-07-15",
+    "peak_intensity": 1.61,
+    "mean_intensity": 1.53,
+    "duration_days": 5,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2014-07-27",
+    "end": "2014-10-03",
+    "peak_date": "2014-09-09",
+    "peak_intensity": 1.96,
+    "mean_intensity": 1.63,
+    "duration_days": 69,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2014-12-07",
+    "end": "2015-04-22",
+    "peak_date": "2015-03-06",
+    "peak_intensity": 1.66,
+    "mean_intensity": 1.27,
+    "duration_days": 137,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2015-05-03",
+    "end": "2015-05-07",
+    "peak_date": "2015-05-04",
+    "peak_intensity": 1.15,
+    "mean_intensity": 1.13,
+    "duration_days": 5,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2015-05-13",
+    "end": "2015-05-22",
+    "peak_date": "2015-05-17",
+    "peak_intensity": 1.27,
+    "mean_intensity": 1.24,
+    "duration_days": 10,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2015-05-26",
+    "end": "2015-06-08",
+    "peak_date": "2015-06-03",
+    "peak_intensity": 1.63,
+    "mean_intensity": 1.38,
+    "duration_days": 14,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2015-06-15",
+    "end": "2015-06-21",
+    "peak_date": "2015-06-20",
+    "peak_intensity": 1.52,
+    "mean_intensity": 1.43,
+    "duration_days": 7,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2015-06-28",
+    "end": "2015-07-04",
+    "peak_date": "2015-07-01",
+    "peak_intensity": 1.68,
+    "mean_intensity": 1.57,
+    "duration_days": 7,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2015-07-10",
+    "end": "2015-07-15",
+    "peak_date": "2015-07-12",
+    "peak_intensity": 1.58,
+    "mean_intensity": 1.48,
+    "duration_days": 6,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2016-01-16",
+    "end": "2016-02-01",
+    "peak_date": "2016-01-28",
+    "peak_intensity": 0.98,
+    "mean_intensity": 0.9,
+    "duration_days": 17,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2016-02-06",
+    "end": "2016-03-21",
+    "peak_date": "2016-03-02",
+    "peak_intensity": 1.18,
+    "mean_intensity": 0.99,
+    "duration_days": 45,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2016-03-29",
+    "end": "2016-05-07",
+    "peak_date": "2016-04-22",
+    "peak_intensity": 1.46,
+    "mean_intensity": 1.27,
+    "duration_days": 40,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2016-05-13",
+    "end": "2016-05-20",
+    "peak_date": "2016-05-15",
+    "peak_intensity": 1.88,
+    "mean_intensity": 1.51,
+    "duration_days": 8,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2016-05-25",
+    "end": "2016-07-01",
+    "peak_date": "2016-06-16",
+    "peak_intensity": 1.71,
+    "mean_intensity": 1.39,
+    "duration_days": 38,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2016-07-17",
+    "end": "2016-07-22",
+    "peak_date": "2016-07-20",
+    "peak_intensity": 1.69,
+    "mean_intensity": 1.5,
+    "duration_days": 6,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2016-07-28",
+    "end": "2016-08-04",
+    "peak_date": "2016-07-29",
+    "peak_intensity": 1.47,
+    "mean_intensity": 1.4,
+    "duration_days": 8,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2016-08-26",
+    "end": "2016-11-01",
+    "peak_date": "2016-09-07",
+    "peak_intensity": 2.17,
+    "mean_intensity": 1.67,
+    "duration_days": 68,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2018-09-24",
+    "end": "2018-12-12",
+    "peak_date": "2018-10-18",
+    "peak_intensity": 2.05,
+    "mean_intensity": 1.61,
+    "duration_days": 80,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2018-12-29",
+    "end": "2019-01-04",
+    "peak_date": "2018-12-30",
+    "peak_intensity": 1.0,
+    "mean_intensity": 0.94,
+    "duration_days": 7,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2019-01-31",
+    "end": "2019-02-05",
+    "peak_date": "2019-02-01",
+    "peak_intensity": 1.06,
+    "mean_intensity": 0.98,
+    "duration_days": 6,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2019-02-24",
+    "end": "2019-03-01",
+    "peak_date": "2019-02-26",
+    "peak_intensity": 1.04,
+    "mean_intensity": 1.0,
+    "duration_days": 6,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2019-03-17",
+    "end": "2019-04-20",
+    "peak_date": "2019-04-02",
+    "peak_intensity": 1.35,
+    "mean_intensity": 1.1,
+    "duration_days": 35,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2019-04-29",
+    "end": "2019-05-22",
+    "peak_date": "2019-05-18",
+    "peak_intensity": 1.39,
+    "mean_intensity": 1.23,
+    "duration_days": 24,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2019-06-02",
+    "end": "2019-06-14",
+    "peak_date": "2019-06-06",
+    "peak_intensity": 1.75,
+    "mean_intensity": 1.52,
+    "duration_days": 13,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2019-06-24",
+    "end": "2019-10-15",
+    "peak_date": "2019-08-16",
+    "peak_intensity": 2.49,
+    "mean_intensity": 1.71,
+    "duration_days": 114,
+    "category": 1,
+    "category_name": "Moderate"
+  },
+  {
+    "start": "2019-11-08",
+    "end": "2019-12-31",
+    "peak_date": "2019-11-20",
+    "peak_intensity": 1.82,
+    "mean_intensity": 1.42,
+    "duration_days": 54,
+    "category": 1,
+    "category_name": "Moderate"
+  }
+]
