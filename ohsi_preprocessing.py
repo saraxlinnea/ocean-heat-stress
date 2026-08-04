@@ -759,6 +759,27 @@ def main():
     # ── Step 3: Ecosystem (static) ─────────────────────────────────────────
     save(ECOSYSTEM, "ecosystem.json")
 
+    # ── Reconcile empty regional artifacts (never leave status ok on []) ──
+    for key in REGIONS:
+        sst_path = os.path.join(OUT_DIR, f"{key}_sst.json")
+        if not os.path.exists(sst_path):
+            continue
+        try:
+            with open(sst_path) as f:
+                on_disk = json.load(f)
+        except Exception:
+            on_disk = None
+        if isinstance(on_disk, list) and len(on_disk) == 0:
+            prev = meta.get("regions", {}).get(key, {})
+            meta.setdefault("regions", {})[key] = {
+                **{k: prev[k] for k in ("name", "lon", "lat") if k in prev},
+                "n_events": 0,
+                "n_months": 0,
+                "status": "empty",
+                "error": "on-disk series empty",
+            }
+            print(f"  Reconcile {key}: empty on-disk series -> status empty")
+
     # ── Step 4: Metadata ───────────────────────────────────────────────────
     save(meta, "meta.json")
 

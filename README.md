@@ -1,36 +1,46 @@
 # Ocean Heating: Events and Impacts
 
-Long-term ocean warming, marine heatwaves, and ecosystem consequences built as a single deployable HTML file with D3.js. 
+Long-term ocean warming, marine heatwaves, and ecosystem consequences. Single deployable HTML file with D3.js.
 
 Live: [saraxlinnea.github.io/ocean-heat-stress](https://saraxlinnea.github.io/ocean-heat-stress)
 
 > **Disclaimer:** Independent science communication project by Sara Bower. Uses public NOAA data and published literature. Not affiliated with, endorsed by, or representing the views of NOAA or any U.S. government agency.
 
+**Docs (Tier C scaffold):** [`AGENTS.md`](AGENTS.md) · [`DATA_SPEC.md`](DATA_SPEC.md) · [`CLAIMS.md`](CLAIMS.md) (drafts only; none locked)
+
 ---
 
 ## What it shows
 
-Ocean warming is the long-term trend. Marine heatwaves are the acute events layered on top. When those events cross ecological thresholds, they trigger measurable damage — fishery collapses, coral bleaching, intertidal die-offs. The dashboard tracks all three layers across five case studies.
+Ocean warming is the long-term trend. Marine heatwaves are the acute events layered on top. When those events cross ecological thresholds, they trigger measurable damage: fishery collapses, coral bleaching, intertidal die-offs.
+
+The site walks **Home → Case studies → Case detail**, with **Methods & sources** for baselines and provenance.
+
+**Home.** Fullscreen entrance with a muted ocean photo, three sourced framing figures, and an ERSST anomaly sparkline (1981–present).
+
+**Case studies.** Five regions. Open one to read the story and inspect charts.
 
 **2014–2016 Pacific Blob, Gulf of Alaska.** A persistent high-pressure ridge suppressed wind mixing across the Northeast Pacific for nearly three years. SSTs exceeded the 90th percentile baseline by up to 2.5°C. The 2017 AFSC bottom trawl survey documented a 71% decline in Pacific cod abundance relative to the 2015 survey (Barbeaux et al. 2020). The fishery closed in 2020, the first closure in its history. In the Bering Sea, a connected heatwave in 2018–19 drove the starvation-related disappearance of more than 10 billion snow crab (Szuwalski et al. 2023).
 
-**2016 and 2024 GBR bleaching events.** The 2016 event bleached 91% of surveyed Great Barrier Reef structures, with the northern reef — the most remote and least disturbed — hit hardest. In April 2024, NOAA confirmed the fourth global coral bleaching event, the largest on record. The interval between severe bleaching events has collapsed from roughly a decade in the 1980s to near-annual since 2016.
+**2016 and 2024 GBR bleaching events.** The 2016 event bleached 91% of surveyed Great Barrier Reef structures, with the northern reef (the most remote and least disturbed) hit hardest. In April 2024, NOAA confirmed the fourth global coral bleaching event, the largest on record. The interval between severe bleaching events has collapsed from roughly a decade in the 1980s to near-annual since 2016.
 
-**2011 Ningaloo Niña (Western Australia kelp collapse)** 
+**2011 Ningaloo Niña (Western Australia kelp collapse)**
 
-**2015–16 Tasman Sea heatwave** 
+**2015–16 Tasman Sea heatwave**
 
 **2023 NE Atlantic basin-scale event**
+
+Gulf of Alaska and GBR SST / MHW charts use NOAA OISST **when** `data/blob_*.json` and `data/gbr_*.json` are non-empty. If those files are empty, the UI keeps **Illustrative** fallbacks and does not show a NOAA pill. Ningaloo, Tasman, and NE Atlantic SST series are illustrative until pipelined.
 
 ---
 
 ## Data sources
 
-| Dataset | Source | Used in dashboard |
+| Dataset | Source | Used in |
 |---|---|---|
-| NOAA OISST v2.1 | NOAA NCEI via ERDDAP | Hero chart (global), Gulf of Alaska & GBR case studies (when pipeline has run) |
-| NOAAGlobalTemp v6 ocean annual | NOAA NCEI direct ASCII | Hero chart (1880–present) |
-| Hobday MHW detection | `marineHeatWaves` Python package | Gulf of Alaska & GBR MHW bands |
+| NOAA OISST v2.1 | NOAA NCEI via ERDDAP | Global OISST series; Gulf of Alaska & GBR case studies when pipeline JSON is non-empty |
+| NOAAGlobalTemp v6 ocean annual | NOAA NCEI direct ASCII | Home ERSST sparkline (and stored global series) |
+| Hobday MHW detection | `marineHeatWaves` Python package | Gulf of Alaska & GBR MHW bands when pipeline JSON is non-empty |
 | Pacific cod CPUE | Barbeaux et al. 2020; AFSC GAP via NOAA FOSS | Blob ecosystem chart (literature-transcribed values) |
 | Snow crab abundance | Szuwalski et al. 2023 *Science* | Blob ecosystem chart (approximate index, unverified year-by-year) |
 | GBR bleaching extent | Hughes et al. 2017 *Nature*; AIMS LTMP; NOAA CRW | GBR ecosystem chart (literature-transcribed values) |
@@ -42,9 +52,9 @@ NOAA Coral Reef Watch `mhw_5km` is listed in the resources panel as a related pr
 
 ## Baselines
 
-**Global hero chart:** NOAAGlobalTemp v6 (ERSSTv6 ocean) and OISST v2.1 global annual anomalies each use NOAA's native **1971–2000** baseline. The two lines are shown separately from 1981 onward so the shift from reconstruction to satellite-era observing is visible.
+**Home ERSST sparkline / global series:** NOAAGlobalTemp v6 (ERSSTv6 ocean) and OISST v2.1 global annual anomalies each use NOAA's native **1971–2000** baseline.
 
-**Gulf of Alaska and Great Barrier Reef:** Monthly SST anomalies and Hobday MHW detection use a **1991–2020** climatology (WMO 30-year normal), computed from raw OISST `sst` in the preprocessing script.
+**Gulf of Alaska and Great Barrier Reef (when pipelined):** Monthly SST anomalies and Hobday MHW detection use a **1991–2020** climatology (WMO 30-year normal), computed from raw OISST `sst` in the preprocessing script.
 
 **Other case studies:** Illustrative monthly SST series derived from published literature.
 
@@ -52,13 +62,13 @@ NOAA Coral Reef Watch `mhw_5km` is listed in the resources panel as a related pr
 
 ## Marine heatwave definition
 
-This dashboard applies the Hobday et al. 2016 standard: a marine heatwave is a period when SST exceeds the locally and seasonally varying 90th percentile of the 1991–2020 climatological baseline for at least 5 consecutive days. The 90th percentile is computed for each calendar day using an 11-day window, then smoothed with a 31-day running mean. Intensity categories follow the Hobday taxonomy.
+This project applies the Hobday et al. 2016 standard: a marine heatwave is a period when SST exceeds the locally and seasonally varying 90th percentile of the 1991–2020 climatological baseline for at least 5 consecutive days. The 90th percentile is computed for each calendar day using an 11-day window, then smoothed with a 31-day running mean. Intensity categories follow the Hobday taxonomy.
 
 ---
 
 ## Running the data pipeline
 
-The dashboard loads pre-computed JSON from `./data/`. A GitHub Actions workflow (`.github/workflows/update-data.yml`) refreshes this data nightly from NOAA. To run it locally:
+The site loads pre-computed JSON from `./data/`. A GitHub Actions workflow (`.github/workflows/update-data.yml`) refreshes this data nightly from NOAA. To run it locally:
 
 ```bash
 pip install requests pandas numpy scipy
@@ -66,13 +76,15 @@ pip install git+https://github.com/ecjoliver/marineHeatWaves.git
 python ohsi_preprocessing.py
 ```
 
-The script fetches the NOAAGlobalTemp ocean annual series directly from NCEI, pulls OISST from ERDDAP for the two NOAA-backed case study regions and globally, runs Hobday MHW detection, and writes eight JSON files to `./data/`. First run takes 5–10 minutes depending on ERDDAP response time.
+The script fetches the NOAAGlobalTemp ocean annual series directly from NCEI, pulls OISST from ERDDAP for the two NOAA-backed case study regions and globally, runs Hobday MHW detection, and writes JSON to `./data/`. First run takes 5–10 minutes depending on ERDDAP response time.
+
+If regional files are empty `[]`, meta records `status: empty` and the UI must not label those cases as NOAA OISST.
 
 If the NOAA file returns a 404, the filename has been updated. Check the directory at `ncei.noaa.gov/data/noaa-global-surface-temperature/v6/access/timeseries/` and update `NOAA_OCEAN_FILE` at the top of the script.
 
 ### Methods notebook
 
-For step-by-step exploration and sanity-check plots, open [`notebooks/methods.ipynb`](notebooks/methods.ipynb) in Jupyter Lab or VS Code. It reads the same `./data/` JSON the dashboard uses. Install extras: `pip install matplotlib jupyter`.
+For step-by-step exploration and sanity-check plots, open [`notebooks/methods.ipynb`](notebooks/methods.ipynb) in Jupyter Lab or VS Code. It reads the same `./data/` JSON the site uses. Install extras: `pip install matplotlib jupyter`.
 
 ---
 
@@ -89,10 +101,10 @@ For step-by-step exploration and sanity-check plots, open [`notebooks/methods.ip
 
 ## Background
 
-Built by Sara Bower. B.S. Global Environmental Science, University of Hawaiʻi at Mānoa. 
+Built by Sara Bower. B.S. Global Environmental Science, University of Hawaiʻi at Mānoa.
 
 ---
 
 ## License
 
-MIT. See LICENSE. Data sources are public domain (NOAA) or cited from published literature and not reproduced here.
+MIT. See LICENSE. Data sources are public domain (NOAA) or cited from published literature and not reproduced here. Home photo: see [`media/SOURCES.md`](media/SOURCES.md).
