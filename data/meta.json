@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-08-09T09:28:12.012358+00:00",
+  "generated_utc": "2026-08-10T10:07:55.432676+00:00",
   "oisst_dataset": "https://coastwatch.pfeg.noaa.gov/erddap/griddap/ncdcOisst21Agg_LonPM180",
   "noaa_globaltemp_file": "https://www.ncei.noaa.gov/data/noaa-global-surface-temperature/v6/access/timeseries/aravg.ann.ocean.90S.90N.v6.0.0.202512.asc",
   "climatology_baseline": "1991-2020",
@@ -9,37 +9,17 @@
   "oisst_latency_days": 14,
   "regions": {
     "blob": {
-      "name": "Gulf of Alaska",
-      "lon": [
-        -165,
-        -130
-      ],
-      "lat": [
-        50,
-        62
-      ],
-      "n_events": 39,
-      "n_months": 348,
-      "status": "ok"
+      "status": "fetch_failed",
+      "error": "no data after chunked fetch"
     },
     "gbr": {
-      "name": "Great Barrier Reef",
-      "lon": [
-        142,
-        154
-      ],
-      "lat": [
-        -25,
-        -10
-      ],
-      "n_events": 67,
-      "n_months": 408,
-      "status": "ok"
+      "status": "fetch_failed",
+      "error": "no data after chunked fetch"
     }
   },
   "method": "hobday",
   "ersst_years": "1850-2025",
   "ersst_status": "ok",
-  "oisst_global_years": "1982-2025",
+  "oisst_global_years": "1982-2007",
   "oisst_global_status": "ok"
 }
