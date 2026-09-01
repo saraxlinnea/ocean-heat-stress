@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-08-31T16:29:57.414454+00:00",
+  "generated_utc": "2026-09-01T13:47:00.310538+00:00",
   "oisst_dataset": "https://coastwatch.pfeg.noaa.gov/erddap/griddap/ncdcOisst21Agg_LonPM180",
   "noaa_globaltemp_file": "https://www.ncei.noaa.gov/data/noaa-global-surface-temperature/v6/access/timeseries/aravg.ann.ocean.90S.90N.v6.0.0.202512.asc",
   "climatology_baseline": "1991-2020",
@@ -45,6 +45,5 @@
   "oni_status": "ok",
   "oni_source": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
   "oni_episodes": 42,
-  "oni_seasons": 918,
-  "oni_latest_year": 2026
+  "oni_seasons": 918
 }
