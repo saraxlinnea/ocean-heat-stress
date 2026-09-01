@@ -19,6 +19,7 @@
   --s1:8px;--s2:16px;--s3:24px;--s4:40px;--s5:56px;
   --space-xs:8px;--space-sm:16px;--space-md:24px;--space-lg:40px;--space-xl:56px;
   --max:1180px;
+  --prose:40rem;
 }
 body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans',sans-serif;font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .page-wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
@@ -26,7 +27,7 @@ header{border-bottom:1.5px solid var(--ink);padding:var(--s4) 0 var(--s3);displa
 .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:6px}
 h1{font-family:'DM Serif Display',serif;font-size:clamp(26px,3vw,32px);font-weight:400;line-height:1.12;color:var(--ink)}
 h1 em{font-style:italic;color:var(--heat)}
-.header-subtitle{font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--gray);margin-top:8px;font-style:italic;letter-spacing:.01em;max-width:36rem;line-height:1.5}
+.header-subtitle{font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--gray);margin-top:8px;font-style:italic;letter-spacing:.01em;max-width:var(--prose);line-height:1.75}
 .header-meta{text-align:right;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gray);line-height:1.9}
 .header-meta a{color:var(--blue);text-decoration:none}
 .header-meta a:hover{text-decoration:underline}
@@ -38,21 +39,72 @@ h1 em{font-style:italic;color:var(--heat)}
 .view-nav-btn:hover{color:var(--ink)}
 .view-nav-btn.active{color:var(--ink);border-bottom-color:var(--heat)}
 .view-panel[hidden]{display:none!important}
-body.view-is-home #site-header,
-body.view-is-home #site-nav,
-body.view-is-home #site-footer{display:none!important}
-body.view-is-home .data-status:not(.visible){display:none}
-body.view-is-home{
+body.view-is-intro #site-header,
+body.view-is-intro #site-nav,
+body.view-is-intro #site-footer{display:none!important}
+body.view-is-intro .data-status:not(.visible){display:none}
+body.view-is-intro{
   background:var(--ink);
 }
-body.view-is-home .page-wrap{
+body.view-is-intro .page-wrap{
   max-width:none;
   padding:0;
   margin:0;
 }
+.site-title-btn{background:none;border:none;padding:0;margin:0;text-align:left;cursor:pointer;color:inherit;font:inherit}
+.site-title-btn:hover h1{color:var(--heat)}
+.site-title-btn h1{transition:color .15s;margin:0}
+
+.overview-home{padding-bottom:var(--s4)}
+.overview-enso{padding:var(--s4) 0;border-top:1px solid var(--rule);background:var(--white)}
+.overview-enso-head{max-width:var(--prose);margin-bottom:var(--s2)}
+.overview-enso-title{font-family:'DM Serif Display',serif;font-size:clamp(20px,2.2vw,24px);font-weight:400;color:var(--ink);margin:0 0 var(--s1)}
+.overview-enso-lede{font-size:13px;line-height:1.75;color:var(--ink);margin:0 0 var(--s2);max-width:var(--prose)}
+.overview-enso-note{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gray);line-height:1.6;margin:0 0 var(--s3)}
+.overview-enso-grid{display:flex;flex-direction:column;gap:var(--s3);align-items:stretch}
+.overview-case-link{background:none;border:none;padding:0;font:inherit;color:var(--blue);cursor:pointer;text-decoration:underline}
+.overview-case-link:hover{color:var(--heat)}
+.overview-chart-block{display:flex;flex-direction:column;gap:8px}
+.overview-chart-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--gray)}
+#overview-sst-chart,#overview-enso-timeline,#overview-enso-decade,#overview-enso-severity{width:100%;height:auto;display:block}
+.overview-evidence{margin:0 0 var(--s4);padding:var(--s3);background:var(--bg);border:1px solid var(--rule)}
+.overview-evidence-title{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin:0 0 var(--s1)}
+.overview-evidence-list{margin:0;padding:0 0 0 1.1rem;font-size:13px;line-height:1.75;color:var(--ink)}
+.overview-evidence-list li{margin-bottom:6px}
+.overview-evidence-list li:last-child{margin-bottom:0}
+.overview-evidence-src{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--gray)}
+.overview-enso-timeline-block{margin-bottom:var(--s3)}
+.enso-range-toggle{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.enso-range-btn{background:var(--white);border:1px solid var(--rule);padding:4px 10px;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--gray);cursor:pointer}
+.enso-range-btn.active{border-color:var(--heat);color:var(--ink)}
+.temp-unit-toggle{display:flex;gap:0;margin-top:8px;justify-content:flex-end}
+.temp-unit-btn{background:var(--white);border:1px solid var(--rule);border-right:none;padding:4px 10px;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--gray);cursor:pointer;transition:color .15s,border-color .15s}
+.temp-unit-btn:last-child{border-right:1px solid var(--rule)}
+.temp-unit-btn:hover{color:var(--ink)}
+.temp-unit-btn.active{border-color:var(--heat);color:var(--ink);position:relative;z-index:1;box-shadow:0 0 0 1px var(--heat)}
+.methods-unit-note{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gray);line-height:1.6;margin:0 0 var(--s2)}
+.enso-range-btn:hover{color:var(--ink)}
+.overview-enso-charts-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s3);align-items:start}
+.decade-partial-tag{font-family:'IBM Plex Mono',monospace;font-size:8px;color:var(--heat);margin-left:4px}
+.overview-sst-callouts{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:4px}
+.overview-sst-callout{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gray)}
+.overview-sst-callout strong{color:var(--heat);font-weight:500}
+.overview-bridge{padding:var(--s4) 0 var(--s5);border-top:1px solid var(--rule);background:var(--bg)}
+.overview-bridge-lede{font-size:13px;line-height:1.75;color:var(--ink);max-width:var(--prose);margin:0 0 var(--s2)}
+.overview-cta-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.overview-cta{background:var(--heat);color:var(--white);border:none;padding:12px 20px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.overview-cta:hover{filter:brightness(1.05)}
+.overview-cta-secondary{background:transparent;color:var(--ink);border:1px solid var(--rule)}
+.enso-legend{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:6px}
+.enso-legend-item{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--gray);display:flex;align-items:center;gap:5px}
+.enso-legend-swatch{width:10px;height:10px;border-radius:0;flex-shrink:0}
+@media(max-width:900px){
+  .overview-enso-charts-row{grid-template-columns:1fr}
+  .hero-stats{grid-template-columns:1fr}
+}
 
 .methods-page-title{font-family:'DM Serif Display',serif;font-size:26px;font-weight:400;color:var(--ink);margin-bottom:var(--s1);line-height:1.2}
-.methods-page-lede{font-size:13px;color:var(--gray);line-height:1.7;max-width:40rem;margin-bottom:var(--s4)}
+.methods-page-lede{font-size:13px;color:var(--gray);line-height:1.75;max-width:var(--prose);margin-bottom:var(--s4)}
 .methods-body a{color:var(--blue);text-decoration:none}
 .methods-body a:hover{text-decoration:underline}
 
@@ -81,7 +133,7 @@ body.view-is-home .page-wrap{
 .panel-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-bottom:12px}
 #world-map{width:100%;flex:none;display:block}
 .map-legend{display:flex;align-items:center;gap:12px;margin-top:12px}
-#map-mhw-strip{width:100%;flex:none;display:block;margin-top:12px}
+#map-mhw-strip{width:100%;flex:none;display:block;margin-top:12px;height:54px}
 .map-facts{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;margin-top:16px;padding-top:14px;border-top:1px solid var(--rule)}
 .map-fact{display:flex;flex-direction:column;gap:4px}
 .map-fact-label{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--gray)}
@@ -100,10 +152,13 @@ body.view-is-home .page-wrap{
 .peak-band-value .intensity-meta{font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--gray);margin-left:2px}
 .peak-bar-wrap{flex:1;min-width:0}
 .peak-band .bar-track{margin-bottom:0;height:6px}
-.peak-context{font-size:13px;line-height:1.75;color:var(--ink);margin:0;max-width:820px}
+.peak-context{font-size:13px;line-height:1.75;color:var(--ink);margin:0}
+.peak-unit-note{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--gray);margin:8px 0 0;line-height:1.5}
+.peak-unit-note[hidden]{display:none}
 
 .right-panel{display:flex;flex-direction:column;background:var(--white)}
 .ts-section{padding:var(--s3);border-bottom:1px solid var(--rule)}
+#ts-chart{display:block;overflow:visible}
 .ts-source{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--gray);margin:0 0 10px;line-height:1.5;display:flex;align-items:center;flex-wrap:wrap;gap:6px}
 .ts-source-detail{color:var(--gray)}
 .source-pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.05em;text-transform:uppercase;padding:2px 6px;border-radius:0;border:1px solid var(--rule);background:transparent;color:var(--ink);white-space:nowrap}
@@ -124,7 +179,7 @@ body.view-is-home .page-wrap{
 
 .interp-panel{background:var(--white);border-top:1.5px solid var(--ink);padding:var(--s4) 0;display:grid;grid-template-columns:minmax(140px,180px) 1fr 1fr;gap:var(--s3) var(--s4);align-items:start}
 .interp-title{font-family:'DM Serif Display',serif;font-size:22px;font-style:italic;color:var(--ink);line-height:1.25}
-.interp-body{font-size:13px;color:var(--ink);line-height:1.8}
+.interp-body{font-size:13px;color:var(--ink);line-height:1.75;max-width:var(--prose)}
 .interp-body strong{font-weight:600}
 .interp-cite{font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--gray);margin-top:12px;line-height:1.7}
 
@@ -133,7 +188,7 @@ body.view-is-home .page-wrap{
 
 
 
-.methods-body{display:block;padding:0;max-width:42rem}
+.methods-body{display:block;padding:0;max-width:var(--prose)}
 
 .methods-body h4{font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:600;color:var(--ink);margin:var(--s3) 0 var(--s1)}
 .methods-body h4:first-child{margin-top:0}
@@ -154,7 +209,7 @@ body.view-is-home .page-wrap{
 .resource-card a:hover{text-decoration:underline}
 
 footer{padding:var(--s3) 0 var(--s4);border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:flex-start;background:var(--white);flex-wrap:wrap;gap:10px 16px}
-.footer-disclaimer{flex-basis:100%;font-family:'IBM Plex Sans',sans-serif;font-size:11px;color:var(--gray);line-height:1.7;padding-bottom:14px;border-bottom:1px solid var(--rule);margin-bottom:4px;max-width:52rem}
+.footer-disclaimer{flex-basis:100%;font-family:'IBM Plex Sans',sans-serif;font-size:11px;color:var(--gray);line-height:1.75;padding-bottom:14px;border-bottom:1px solid var(--rule);margin-bottom:4px;max-width:var(--prose)}
 .footer-text{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gray)}
 .footer-text a{color:var(--blue);text-decoration:none}
 .footer-text a:hover{text-decoration:underline}
@@ -171,7 +226,7 @@ footer{padding:var(--s3) 0 var(--s4);border-top:1px solid var(--rule);display:fl
 .hero-thesis{padding:var(--s4) var(--s3) var(--s4) 0;border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:16px}
 .hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
 .hero-heading{font-family:'DM Serif Display',serif;font-size:clamp(22px,2.4vw,26px);font-weight:400;line-height:1.2;color:var(--ink)}
-.hero-body{font-size:13px;line-height:1.8;color:var(--ink);max-width:460px}
+.hero-body{font-size:13px;line-height:1.75;color:var(--ink);max-width:var(--prose)}
 .hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3);margin-top:var(--s2);padding-top:var(--s3);border-top:1px solid var(--rule)}
 .hero-stat-num{font-family:'DM Serif Display',serif;font-size:28px;color:var(--heat);line-height:1}
 .hero-stat-unit{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--heat);margin-left:2px}
@@ -208,6 +263,7 @@ footer{padding:var(--s3) 0 var(--s4);border-top:1px solid var(--rule);display:fl
   .ds-note{flex-basis:100%;margin-left:0;margin-top:2px}
   header{grid-template-columns:1fr;gap:12px;padding:22px 0 18px}
   .header-meta{text-align:left}
+  .temp-unit-toggle{justify-content:flex-start}
   .main-grid{grid-template-columns:1fr}
   .map-panel{border-right:none;border-bottom:1px solid var(--rule);position:static;min-height:auto!important;padding:18px 0 20px}
   .peak-band-row{flex-direction:column;align-items:flex-start;gap:10px}
@@ -233,14 +289,14 @@ footer{padding:var(--s3) 0 var(--s4);border-top:1px solid var(--rule);display:fl
 .home-cta-note{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gray);letter-spacing:.04em}
 .cases-index{padding:var(--s4) 0 var(--s5);background:var(--bg)}
 .cases-index-title{font-family:'DM Serif Display',serif;font-size:clamp(24px,2.6vw,28px);font-weight:400;color:var(--ink);margin-bottom:var(--s1);line-height:1.2}
-.cases-index-lede{font-size:13px;color:var(--gray);line-height:1.75;max-width:40rem;margin-bottom:var(--s4)}
+.cases-index-lede{font-size:13px;color:var(--gray);line-height:1.75;max-width:var(--prose);margin-bottom:var(--s4)}
 .case-index-list{display:flex;flex-direction:column;border-top:1px solid var(--rule)}
 .case-index-item{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto auto;gap:4px 24px;width:100%;text-align:left;background:transparent;border:none;border-bottom:1px solid var(--rule);padding:var(--s3) 0;cursor:pointer;color:inherit;font:inherit;transition:background .15s}
 .case-index-item:hover{background:rgba(46,125,175,0.04)}
 .case-index-item:hover .case-index-enter{color:var(--heat)}
 .case-index-meta{grid-column:1;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
 .case-index-label{grid-column:1;font-family:'DM Serif Display',serif;font-size:20px;color:var(--ink);line-height:1.25;margin-top:2px}
-.case-index-text{grid-column:1;font-size:13px;color:var(--gray);line-height:1.7;max-width:44rem;margin-top:6px}
+.case-index-text{grid-column:1;font-size:13px;color:var(--gray);line-height:1.75;max-width:var(--prose);margin-top:6px}
 .case-index-enter{grid-column:2;grid-row:1 / span 3;align-self:center;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);white-space:nowrap}
 .case-detail-bar{display:flex;align-items:center;justify-content:space-between;gap:var(--s2);padding:var(--s2) 0;border-bottom:1px solid var(--rule);background:var(--white)}
 .case-back{background:none;border:none;padding:0;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);cursor:pointer}
@@ -438,25 +494,31 @@ footer{padding:var(--s3) 0 var(--s4);border-top:1px solid var(--rule);display:fl
 <header id="site-header">
   <div>
     <div class="eyebrow">NOAA NCEI OISST &middot; AFSC GAP surveys &middot; peer-reviewed literature</div>
-    <h1>Ocean <em>Heating</em>: Events and Impacts</h1>
+    <button type="button" class="site-title-btn" data-view="intro" aria-label="Return to opening view">
+      <h1>Ocean <em>Heating</em>: Events and Impacts</h1>
+    </button>
     <div class="header-subtitle">Long-term ocean warming, marine heatwaves, and what they cost ecosystems.</div>
   </div>
   <div class="header-meta">
     <a href="https://saraxlinnea.github.io" target="_blank">saraxlinnea.github.io</a><br>
     <button type="button" class="view-link" data-view="methods">Methods &amp; sources</button><br>
-    <span id="last-updated">v0.4 &middot; June 2026</span>
+    <span id="last-updated">Ocean Heating Index</span>
+    <div class="temp-unit-toggle" role="group" aria-label="Temperature units">
+      <button type="button" class="temp-unit-btn active" data-temp-unit="C" aria-pressed="true">&deg;C</button>
+      <button type="button" class="temp-unit-btn" data-temp-unit="F" aria-pressed="false">&deg;F</button>
+    </div>
   </div>
 </header>
 
 <div class="data-status" id="data-status" aria-live="polite" role="status"></div>
 
 <nav class="view-nav" id="site-nav" aria-label="Primary">
-  <button type="button" class="view-nav-btn active" data-view="home" id="nav-home">Home</button>
+  <button type="button" class="view-nav-btn" data-view="home" id="nav-home">Home</button>
   <button type="button" class="view-nav-btn" data-view="cases" id="nav-cases">Case studies</button>
   <button type="button" class="view-nav-btn" data-view="methods" id="nav-methods">Methods &amp; sources</button>
 </nav>
 
-<div id="view-home" class="view-panel" data-view-panel="home">
+<div id="view-intro" class="view-panel" data-view-panel="intro">
 
 <section class="home-entrance" aria-label="Introduction">
   <div class="home-entrance-media" aria-hidden="true"></div>
@@ -466,7 +528,7 @@ footer{padding:var(--s3) 0 var(--s4);border-top:1px solid var(--rule);display:fl
       <div class="hero-eyebrow">Trend · Events · Impacts</div>
       <h1 class="home-entrance-heading">Ocean <em>Heating</em></h1>
       <p class="home-entrance-tag">Warming is the trend. Marine heatwaves are the events.</p>
-      <button type="button" class="home-cta" data-view="cases">Explore case studies</button>
+      <button type="button" class="home-cta" data-view="home">Explore overview</button>
       <dl class="home-proof-stack" aria-label="Key figures">
         <div class="home-proof-line" title="von Schuckmann et al. (2023) Earth System Science Data · NOAA NCEI">
           <dt>&gt;90%</dt>
@@ -474,7 +536,7 @@ footer{padding:var(--s3) 0 var(--s4);border-top:1px solid var(--rule);display:fl
         </div>
         <div class="home-proof-line" title="Frölicher, Fischer &amp; Gruber (2018) Nature">
           <dt>2×</dt>
-          <dd>marine heatwave days since 1982 <span class="home-proof-src">Frölicher et al. 2018</span></dd>
+          <dd>marine heatwave days roughly doubled, 1982&ndash;2016 <span class="home-proof-src">Fr&ouml;licher et al. 2018</span></dd>
         </div>
         <div class="home-proof-line" title="IPCC Special Report on 1.5°C (2018) · Hoegh-Guldberg et al.">
           <dt>70–90%</dt>
@@ -494,10 +556,112 @@ footer{padding:var(--s3) 0 var(--s4);border-top:1px solid var(--rule);display:fl
   <div class="home-foot">
     <span>Sara Bower · independent · NOAA public data · not affiliated with NOAA</span>
     <span class="home-foot-links">
+      <button type="button" class="home-foot-link" data-view="home">Overview</button>
       <button type="button" class="home-foot-link" data-view="cases">Cases</button>
       <button type="button" class="home-foot-link" data-view="methods">Methods</button>
     </span>
   </div>
+</section>
+
+</div><!-- /view-intro -->
+
+<div id="view-home" class="view-panel" data-view-panel="home" hidden>
+
+<section class="overview-home" aria-label="Ocean heating overview">
+  <div class="hero">
+    <div class="hero-thesis">
+      <div class="hero-eyebrow">Trend · Events · Impacts</div>
+      <h2 class="hero-heading">Ocean heating at a glance</h2>
+      <p class="hero-body">The ocean absorbs most excess heat from greenhouse warming. Marine heatwaves are acute warm spells on that rising baseline. El Ni&ntilde;o and La Ni&ntilde;a redistribute Pacific heat and can amplify regional stress when they overlap with background warming.</p>
+      <div class="hero-stats" aria-label="Key figures">
+        <div class="hero-stat">
+          <div><span class="hero-stat-num">&gt;90</span><span class="hero-stat-unit">%</span></div>
+          <div class="hero-stat-label">of excess heat absorbed by the ocean</div>
+          <div class="hero-stat-source">von Schuckmann et al. 2023</div>
+        </div>
+        <div class="hero-stat">
+          <div><span class="hero-stat-num">2</span><span class="hero-stat-unit">&times;</span></div>
+          <div class="hero-stat-label">marine heatwave days roughly doubled, 1982&ndash;2016</div>
+          <div class="hero-stat-source">Fr&ouml;licher et al. 2018</div>
+        </div>
+        <div class="hero-stat">
+          <div><span class="hero-stat-num">70&ndash;90</span><span class="hero-stat-unit">%</span></div>
+          <div class="hero-stat-label">of coral reefs projected severely degraded or gone at 1.5&deg;C</div>
+          <div class="hero-stat-source">IPCC SR1.5 2018</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-chart-wrap">
+      <div class="hero-chart-header">
+        <div class="hero-eyebrow">Global ocean surface temperature</div>
+        <div class="hero-baselines">
+          <span class="hero-baseline-tag">Baseline 1971&ndash;2000 (NOAA native)</span>
+          <span class="source-pill noaa">NOAA NCEI</span>
+        </div>
+        <div class="hero-legend">
+          <span class="hero-legend-dot" style="background:var(--blue)"></span><span class="hero-legend-text">ERSSTv6 ocean annual</span>
+          <span class="hero-legend-dot" style="background:var(--heat)"></span><span class="hero-legend-text">OISST v2.1 global annual (1982+)</span>
+        </div>
+      </div>
+      <svg id="overview-sst-chart" role="img" aria-label="Global ocean temperature anomaly time series"></svg>
+      <div class="overview-sst-callouts" id="overview-sst-callouts"></div>
+      <p class="hero-chart-note">Annual mean anomalies. ERSST extends further back; OISST covers the satellite era independently.</p>
+    </div>
+  </div>
+
+  <aside class="overview-evidence" aria-label="Related climate evidence">
+    <h3 class="overview-evidence-title">Related evidence (separate from ENSO counts)</h3>
+    <ul class="overview-evidence-list" id="overview-evidence-list">
+      <li id="overview-evidence-sst">Global ocean SST anomaly from NOAA ERSSTv6 <span class="overview-evidence-src">(pipeline)</span></li>
+      <li>Marine heatwave days globally roughly doubled between 1982 and 2016 <span class="overview-evidence-src">Fr&ouml;licher et al. 2018</span></li>
+      <li>Long-term marine heatwave burden still increased after removing ENSO&rsquo;s linear SST signature <span class="overview-evidence-src">Oliver et al. 2018</span></li>
+    </ul>
+  </aside>
+
+  <section class="overview-enso" aria-label="El Niño and La Niña">
+    <div class="overview-enso-head">
+      <h2 class="overview-enso-title">El Ni&ntilde;o and La Ni&ntilde;a on a warmer baseline</h2>
+      <p class="overview-enso-lede">Pacific warm and cool phases stack on long-term ocean warming. Strong episodes can trigger or intensify regional marine heat stress. The 2011 Ningaloo Ni&ntilde;a (<button type="button" class="overview-case-link" data-open-case="ningaloo">La Ni&ntilde;a-driven</button>; Feng et al. 2013 call this the Ningaloo Ni&ntilde;o) and 2016 GBR bleaching (El Ni&ntilde;o plus warming) are case-study examples.</p>
+      <p class="overview-enso-lede">ENSO episode counts fluctuate decade to decade. They are not a thermometer for long-term climate change. The SST chart and marine heatwave evidence above are separate, stronger lines of evidence for ocean warming. La Ni&ntilde;a does not mean the ocean is cooling overall; regional heatwaves can still occur on a warmer baseline.</p>
+      <p class="overview-enso-note">Oceanic Ni&ntilde;o Index (ONI): 3-month running mean Ni&ntilde;o 3.4 anomaly from NOAA CPC. Episodes when |ONI| &ge; 0.5&deg;C for &ge;5 consecutive overlapping seasons (CPC convention). Classic ONI, not RONI. Pre-1980 values rely on ship-based SST reconstruction (higher uncertainty than the satellite era).</p>
+    </div>
+    <div class="overview-enso-grid">
+      <div class="overview-chart-block overview-enso-timeline-block">
+        <div class="overview-chart-label">Warm and cool episodes</div>
+        <div class="enso-range-toggle" role="group" aria-label="Timeline range">
+          <button type="button" class="enso-range-btn active" data-enso-range="1950">Since 1950</button>
+          <button type="button" class="enso-range-btn" data-enso-range="1982">Since 1982 (satellite era)</button>
+        </div>
+        <svg id="overview-enso-timeline" role="img" aria-label="ONI El Niño and La Niña episode timeline"></svg>
+        <p class="hero-chart-note" id="overview-enso-timeline-note">1950&ndash;present (CPC ONI). The 1982 view aligns with the OISST satellite record.</p>
+        <div class="enso-legend">
+          <span class="enso-legend-item"><span class="enso-legend-swatch" style="background:#E8572A"></span>El Ni&ntilde;o</span>
+          <span class="enso-legend-item"><span class="enso-legend-swatch" style="background:#2E7DAF"></span>La Ni&ntilde;a</span>
+          <span class="enso-legend-item">Bar length = episode duration · Color depth = peak |ONI|</span>
+        </div>
+      </div>
+      <div class="overview-enso-charts-row">
+        <div class="overview-chart-block">
+          <div class="overview-chart-label">ENSO episodes per decade (count, not severity)</div>
+          <svg id="overview-enso-decade" role="img" aria-label="ENSO episode counts by decade"></svg>
+          <p class="hero-chart-note" id="overview-enso-decade-note"></p>
+        </div>
+        <div class="overview-chart-block">
+          <div class="overview-chart-label">Peak episode strength by decade <span class="source-pill noaa">NOAA CPC ONI</span></div>
+          <svg id="overview-enso-severity" role="img" aria-label="Peak ONI magnitude by decade"></svg>
+          <p class="hero-chart-note">Tallest bar = strongest episode that peaked in that decade. Peak strength varies by decade; the 2010s include the record 2015&ndash;16 El Ni&ntilde;o. Not a monotonic climate-change trend.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="overview-bridge">
+    <p class="overview-bridge-lede">When sustained or acute heating crosses ecological thresholds, fisheries, kelp forests, and coral reefs show measurable damage. Five regional case studies walk through the mechanism and the evidence.</p>
+    <div class="overview-cta-row">
+      <button type="button" class="overview-cta" data-view="cases">Explore case studies</button>
+      <button type="button" class="overview-cta overview-cta-secondary" data-view="methods">Methods &amp; sources</button>
+    </div>
+  </section>
 </section>
 
 </div><!-- /view-home -->
@@ -569,6 +733,7 @@ footer{padding:var(--s3) 0 var(--s4);border-top:1px solid var(--rule);display:fl
     </div>
   </div>
   <p class="peak-context" id="peak-context"></p>
+  <p class="peak-unit-note" id="peak-unit-note" hidden>Narrative thresholds below remain in &deg;C as published.</p>
 </div>
 
 <div class="main-grid">
@@ -615,10 +780,12 @@ footer{padding:var(--s3) 0 var(--s4);border-top:1px solid var(--rule);display:fl
 <div class="methods-section">
   <h2 class="methods-page-title">Methods &amp; data provenance</h2>
   <p class="methods-page-lede">Baselines, Hobday detection, latency, and known limits. Case-study charts keep NOAA vs illustrative labels on the dashboard.</p>
+  <p class="methods-unit-note">Interactive charts follow your unit choice in the header. Literature quotes remain in original &deg;C as published.</p>
   <div class="methods-body" id="methods-body">
     <p><strong>Disclaimer:</strong> Independent science communication project by Sara Bower. Uses public NOAA data and published literature. Not affiliated with, endorsed by, or representing the views of NOAA or any U.S. government agency.</p>
     <h4>Climatological baseline</h4>
-    <p><strong>Global hero chart:</strong> NOAAGlobalTemp v6 and OISST v2.1 anomalies use each product&rsquo;s native <strong>1971&ndash;2000</strong> baseline, as published by NOAA NCEI. Showing ERSSTv6 and OISST separately makes the pre-1981 reconstruction vs. satellite-era observing system visible.</p>
+    <p><strong>Overview home SST chart:</strong> NOAAGlobalTemp v6 and OISST v2.1 anomalies use each product&rsquo;s native <strong>1971&ndash;2000</strong> baseline, as published by NOAA NCEI. Showing ERSSTv6 and OISST separately makes the pre-1981 reconstruction vs. satellite-era observing system visible.</p>
+    <p><strong>ENSO (Overview home):</strong> Episodes derive from NOAA CPC <strong>Oceanic Niño Index (ONI)</strong>, fetched from <code>oni.ascii.txt</code> in <code>ohsi_preprocessing.py</code>. Classic ONI (not RONI). Episode rule: |ONI| &ge; 0.5&deg;C for &ge;5 consecutive overlapping seasons. Decade episode counts and peak |ONI| per decade are derived from this series. Pre-1980 ONI uses ship-based SST reconstruction. Decade counts are not severity scores and are not a claim of doubled ENSO frequency. Related evidence callout cites Fr&ouml;licher et al. 2018 (MHW days doubled 1982&ndash;2016) and Oliver et al. 2018 (long-term MHW increase persists after removing ENSO&rsquo;s linear SST signature; literature only, no pipelined MHW-days series).</p>
     <p><strong>Gulf of Alaska and Great Barrier Reef case studies:</strong> When pipeline data is present, monthly SST anomalies and Hobday MHW detection use a <strong>1991&ndash;2020</strong> climatology (WMO 30-year normal), computed from raw OISST <code>sst</code> in <code>ohsi_preprocessing.py</code>.</p>
     <p><strong>Ningaloo, Tasman Sea, and NE Atlantic case studies:</strong> Monthly SST series are <strong>illustrative</strong>, derived from published literature values until regional NOAA pipeline coverage is added. Ecosystem composite indices on those cases are author-built summaries, not standard NOAA products.</p>
     <h4>Marine heatwave definition (Hobday et al. 2016)</h4>
@@ -663,7 +830,7 @@ const RESOURCES = [
   {type:"Key Paper",title:"Szuwalski et al. 2023",desc:"Eastern Bering Sea snow crab collapse, attributed to a heatwave-driven starvation event. Figures pending verification on this dashboard.",url:"https://doi.org/10.1126/science.adf6035",urlLabel:"doi.org/10.1126/science.adf6035"},
   {type:"Key Paper",title:"Hughes et al. 2017",desc:"Documents the 2016 GBR mass bleaching. 91% of surveyed reefs bleached; northern section most severe.",url:"https://doi.org/10.1038/nature21707",urlLabel:"doi.org/10.1038/nature21707"},
   {type:"Fishery Projection",title:"Cheung & Frölicher 2020",desc:"Models MHW impacts on NE Pacific fisheries. Open access. Projection, not observational attribution.",url:"https://doi.org/10.1038/s41598-020-63650-z",urlLabel:"doi.org/10.1038/s41598-020-63650-z"},
-  {type:"Key Paper",title:"Wernberg et al. 2013 Nature Climate Change",desc:"\"An extreme climatic event alters marine ecosystem structure in a global biodiversity hotspot.\" The foundational study of the 2011 Ningaloo Ni\u00f1a kelp collapse. Documented as the case in Hobday et al. 2016.",url:"https://doi.org/10.1038/nclimate1627",urlLabel:"doi.org/10.1038/nclimate1627"},
+  {type:"Key Paper",title:"Wernberg et al. 2013 Nature Climate Change",desc:"\"An extreme climatic event alters marine ecosystem structure in a global biodiversity hotspot.\" Foundational kelp-collapse study for the 2011 Western Australia heatwave (this site labels it Ningaloo Ni\u00f1a; Feng et al. 2013 name the Ningaloo Ni\u00f1o). Documented as the case in Hobday et al. 2016.",url:"https://doi.org/10.1038/nclimate1627",urlLabel:"doi.org/10.1038/nclimate1627"},
   {type:"Key Paper",title:"Wernberg et al. 2016 Science",desc:"Documents the permanent regime shift from kelp forests to seaweed turfs across 100 km of Western Australian coast following the 2011 heatwave. The original \"hot ocean\" tropicalization paper.",url:"https://doi.org/10.1126/science.aad8745",urlLabel:"doi.org/10.1126/science.aad8745"},
   {type:"Key Paper",title:"Oliver et al. 2017 Nature Communications",desc:"\"The unprecedented 2015/16 Tasman Sea marine heatwave.\" Primary source for the 251-day event, peak intensity, EAC mechanism, and the 330\u00d7 attribution figure.",url:"https://doi.org/10.1038/ncomms16101",urlLabel:"doi.org/10.1038/ncomms16101"},
   {type:"Key Paper",title:"England et al. 2025 Nature",desc:"\"Drivers of the extreme North Atlantic marine heatwave during 2023.\" Attributes the basin-scale event to reduced wind, reduced Saharan dust, and background warming.",url:"https://doi.org/10.1038/s41586-025-08903-5",urlLabel:"doi.org/10.1038/s41586-025-08903-5"},
@@ -965,6 +1132,7 @@ function updateDataStatusBar(meta, data) {
 
   const ersst = layer(data.global_ersst, meta?.ersst_status);
   const oisst = layer(data.global_oisst, meta?.oisst_global_status);
+  const oni = layer(data.oni && data.oni.seasons, meta?.oni_status);
   const blob = layer(data.blob_sst, meta?.regions?.blob?.status);
   const gbr = layer(data.gbr_sst, meta?.regions?.gbr?.status);
 
@@ -976,6 +1144,7 @@ function updateDataStatusBar(meta, data) {
     `<span class="ds-label">Data pipeline</span>` +
     pill("ERSSTv6 global", ersst) +
     pill("OISST global", oisst) +
+    pill("CPC ONI", oni) +
     pill("Gulf of Alaska", blob) +
     pill("Great Barrier Reef", gbr) +
     `<span class="ds-note">${updated ? "Last run " + updated : "Run ohsi_preprocessing.py"}</span>` +
@@ -995,6 +1164,7 @@ async function loadPipelineData() {
       gbr_sst: fetch("./data/gbr_sst.json", {cache: "no-store"}),
       blob_mhw: fetch("./data/blob_mhw.json", {cache: "no-store"}),
       gbr_mhw: fetch("./data/gbr_mhw.json", {cache: "no-store"}),
+      oni: fetch("./data/oni.json", {cache: "no-store"}),
     };
     const responses = await Promise.all(Object.values(fetches));
     const keys = Object.keys(fetches);
@@ -1003,6 +1173,10 @@ async function loadPipelineData() {
     }
 
     updateDataStatusBar(data.meta, data);
+
+    PIPELINE.global_ersst = data.global_ersst;
+    PIPELINE.global_oisst = data.global_oisst;
+    PIPELINE.oni = data.oni;
 
     if (data.meta && data.meta.generated_utc) {
       document.getElementById("last-updated").textContent =
@@ -1033,8 +1207,80 @@ async function loadPipelineData() {
 
 // ── STATE ───────────────────────────────────────────────────────────────────
 let CASES = FALLBACK;
+let PIPELINE = {global_ersst: null, global_oisst: null, oni: null};
+let ensoTimelineStart = 1950;
 let active="blob";
 let activeSeries="cod";
+
+const TEMP_UNIT_KEY = "ohsi-temp-unit";
+let tempUnit = "C";
+
+function loadTempUnit() {
+  try {
+    const saved = localStorage.getItem(TEMP_UNIT_KEY);
+    if (saved === "C" || saved === "F") tempUnit = saved;
+  } catch (e) {}
+}
+
+function convertAnom(c) {
+  return tempUnit === "F" ? c * 9 / 5 : c;
+}
+
+function tempUnitSymbol() {
+  return tempUnit === "F" ? "\u00b0F" : "\u00b0C";
+}
+
+function formatTempAnom(c, opts) {
+  opts = opts || {};
+  const signed = !!opts.signed;
+  const decimals = opts.decimals != null ? opts.decimals : 1;
+  const withUnit = opts.withUnit !== false;
+  const v = convertAnom(c);
+  let s = "";
+  if (signed && v > 0) s = "+";
+  else if (v < 0) s = "-";
+  s += Math.abs(v).toFixed(decimals);
+  if (withUnit) s += tempUnitSymbol();
+  return s;
+}
+
+function formatAxisTick(c) {
+  const v = convertAnom(c);
+  return (v > 0 ? "+" : "") + v.toFixed(1);
+}
+
+function syncPeakUnitSuffix() {
+  const el = document.querySelector(".intensity-meta");
+  if (el) el.innerHTML = tempUnit === "F" ? "&deg;F" : "&deg;C";
+  const note = document.getElementById("peak-unit-note");
+  if (note) note.hidden = tempUnit !== "F";
+}
+
+function syncTempUnitToggle() {
+  document.querySelectorAll("[data-temp-unit]").forEach(function(btn) {
+    const u = btn.getAttribute("data-temp-unit");
+    btn.classList.toggle("active", u === tempUnit);
+    btn.setAttribute("aria-pressed", u === tempUnit ? "true" : "false");
+  });
+}
+
+function refreshVisibleTempSurfaces() {
+  const home = document.getElementById("view-home");
+  const detail = document.getElementById("view-case");
+  if (home && !home.hidden && typeof drawOverviewCharts === "function") drawOverviewCharts();
+  if (detail && !detail.hidden && typeof render === "function") render(active);
+  else syncPeakUnitSuffix();
+}
+
+function setTempUnit(unit) {
+  if (unit !== "C" && unit !== "F") return;
+  tempUnit = unit;
+  try { localStorage.setItem(TEMP_UNIT_KEY, unit); } catch (e) {}
+  syncTempUnitToggle();
+  refreshVisibleTempSurfaces();
+}
+
+loadTempUnit();
 
 // ── TOOLTIP ─────────────────────────────────────────────────────────────────
 const tt=document.getElementById("tt");
@@ -1067,7 +1313,7 @@ function updateMapFacts(key){
   if(!el||!cs)return;
   const mf=cs.mapFacts||{};
   el.innerHTML=
-    `<div class="map-fact"><span class="map-fact-label">Peak</span><span class="map-fact-val">+${cs.peakAnomaly.toFixed(1)}\u00b0C</span></div>`+
+    `<div class="map-fact"><span class="map-fact-label">Peak</span><span class="map-fact-val">${formatTempAnom(cs.peakAnomaly,{signed:true,decimals:1})}</span></div>`+
     `<div class="map-fact"><span class="map-fact-label">Duration</span><span class="map-fact-val">${mf.duration||"\u2014"}</span></div>`+
     `<div class="map-fact"><span class="map-fact-label">Intensity</span><span class="map-fact-val">${mf.intensity||"\u2014"}</span></div>`+
     `<div class="map-fact"><span class="map-fact-label">Source</span>${sourceBadgeHtml(cs)}</div>`;
@@ -1079,27 +1325,97 @@ function drawMiniMhw(key){
   svg.selectAll("*").remove();
   const el=document.getElementById("map-mhw-strip");
   if(!el||!cs.sst.length)return;
-  const W=el.clientWidth||300,H=40;
+  const W=el.clientWidth||300;
+  const H=54;
+  const padL=4, padR=4, padTop=11, padBottom=14;
+  const bracketY=30;
+  const capH=4;
+  const dotR=2.5;
+  const mono="IBM Plex Mono, monospace";
+
   svg.attr("viewBox",`0 0 ${W} ${H}`).attr("width",W).attr("height",H);
   const dates=cs.sst.map(d=>({date:d.date instanceof Date?d.date:new Date(d.date)}));
-  const x=d3.scaleTime().domain(d3.extent(dates,d=>d.date)).range([4,W-4]);
-  svg.append("line").attr("x1",4).attr("x2",W-4).attr("y1",H-10).attr("y2",H-10).attr("stroke","#DDE3E8").attr("stroke-width",1);
+  const [d0,d1]=d3.extent(dates,d=>d.date);
+  const x=d3.scaleTime().domain([d0,d1]).range([padL,W-padR]);
+
+  svg.append("line")
+    .attr("x1",padL).attr("x2",W-padR)
+    .attr("y1",bracketY).attr("y2",bracketY)
+    .attr("stroke","var(--rule)").attr("stroke-width",1);
+
+  const spanYears=(d1-d0)/(365.25*864e5);
+  const tickStep=spanYears<=8?1:2;
+  const axisG=svg.append("g")
+    .attr("transform",`translate(0,${H-padBottom})`)
+    .call(d3.axisBottom(x).ticks(d3.timeYear.every(tickStep)).tickFormat(d3.timeFormat("%Y")));
+  axisG.selectAll("text").attr("fill","var(--gray)").attr("font-family",mono).attr("font-size",7);
+  axisG.select(".domain").attr("stroke","var(--rule)");
+  axisG.selectAll(".tick line").attr("stroke","var(--rule)");
+
+  function mhwLabelText(p, ps, pe){
+    const base=p.label||"MHW";
+    const y0=ps.getFullYear(), y1=pe.getFullYear();
+    if(y1>y0) return `${y0}-${y1} \u00b7 ${base}`;
+    return base;
+  }
+
+  function truncateLabel(text, maxW){
+    const maxChars=Math.max(4,Math.floor(maxW/3.6));
+    if(text.length<=maxChars) return {text, truncated:false};
+    return {text:text.slice(0,maxChars-1)+"\u2026", truncated:true};
+  }
+
+  const labelRows=[padTop, padTop+8];
+  const placedLabels=[];
+
+  function labelRowFits(xStart,xEnd,rowY){
+    const pad=4;
+    for(let i=0;i<placedLabels.length;i++){
+      const p=placedLabels[i];
+      if(p.rowY!==rowY) continue;
+      if(xEnd+pad>p.xStart && xStart-pad<p.xEnd) return false;
+    }
+    return true;
+  }
+
   cs.mhw.forEach(p=>{
     const ps=p.start instanceof Date?p.start:new Date(p.start);
     const pe=p.end instanceof Date?p.end:new Date(p.end);
-    const x0=x(ps),x1=x(pe),w=Math.max(2,x1-x0);
-    svg.append("rect").attr("x",x0).attr("y",8).attr("width",w).attr("height",H-22)
-      .attr("fill","#E8572A").attr("fill-opacity",.32).attr("rx",1);
-    if(w>34){
-      svg.append("text").attr("x",x0+3).attr("y",18).attr("font-family","IBM Plex Mono,monospace")
-        .attr("font-size",7.5).attr("fill","#8B3A1A").text(p.label);
-    }
+    const x0=x(ps), x1=x(pe);
+    const w=Math.max(x1-x0, 4);
+    const g=svg.append("g").attr("class","mhw-bracket");
+
+    g.append("line").attr("x1",x0).attr("x2",x0).attr("y1",bracketY-capH).attr("y2",bracketY+capH)
+      .attr("stroke","var(--heat)").attr("stroke-width",1.5);
+    g.append("line").attr("x1",x1).attr("x2",x1).attr("y1",bracketY-capH).attr("y2",bracketY+capH)
+      .attr("stroke","var(--heat)").attr("stroke-width",1.5);
+    g.append("line").attr("x1",x0).attr("x2",x1).attr("y1",bracketY).attr("y2",bracketY)
+      .attr("stroke","var(--heat)").attr("stroke-width",2.5).attr("stroke-linecap","round");
+    g.append("circle").attr("cx",x0).attr("cy",bracketY).attr("r",dotR).attr("fill","var(--heat)");
+    g.append("circle").attr("cx",x1).attr("cy",bracketY).attr("r",dotR).attr("fill","var(--heat)");
+
+    const fullLabel=mhwLabelText(p, ps, pe);
+    g.append("title").text(fullLabel);
+
+    if(w<=16) return;
+
+    const {text, truncated}=truncateLabel(fullLabel, w);
+    const anchor=w>=48?"middle":"start";
+    const labelX=anchor==="middle"?(x0+x1)/2:Math.min(x0+2,W-padR-2);
+    const estW=Math.min(w,text.length*3.6);
+    const xStart=anchor==="middle"?labelX-estW/2:labelX;
+    const xEnd=anchor==="middle"?labelX+estW/2:labelX+estW;
+    let rowY=labelRows[0];
+    if(!labelRowFits(xStart,xEnd,rowY)) rowY=labelRowFits(xStart,xEnd,labelRows[1])?labelRows[1]:labelRows[0];
+    placedLabels.push({xStart,xEnd,rowY});
+
+    const labelEl=g.append("text")
+      .attr("x",labelX).attr("y",rowY)
+      .attr("text-anchor",anchor)
+      .attr("font-family",mono).attr("font-size",7).attr("fill","#8B3A1A")
+      .text(text);
+    if(truncated) labelEl.append("title").text(fullLabel);
   });
-  const [d0,d1]=x.domain();
-  svg.append("text").attr("x",4).attr("y",H-1).attr("font-family","IBM Plex Mono,monospace").attr("font-size",7).attr("fill","#9B9B9B")
-    .text(d3.timeFormat("%Y")(d0));
-  svg.append("text").attr("x",W-4).attr("y",H-1).attr("text-anchor","end").attr("font-family","IBM Plex Mono,monospace").attr("font-size",7).attr("fill","#9B9B9B")
-    .text(d3.timeFormat("%Y")(d1));
 }
 
 function drawMap(key){
@@ -1159,33 +1475,48 @@ function drawTS(key){
     srcEl.innerHTML=`<span class="source-pill ${pillClass}">${pillLabel}</span>${detail?`<span class="ts-source-detail">${detail}</span>`:""}`;
   }
   const par=document.getElementById("ts-chart").parentElement;
-  const W=par.clientWidth-32,H=170,m={top:10,right:14,bottom:28,left:42};
+  const W=par.clientWidth-32,H=186,m={top:24,right:14,bottom:28,left:42};
   const iW=W-m.left-m.right,iH=H-m.top-m.bottom;
   svg.attr("viewBox",`0 0 ${W} ${H}`).attr("width",W).attr("height",H);
   const g=svg.append("g").attr("transform",`translate(${m.left},${m.top})`);
+  const labelG=svg.append("g").attr("transform",`translate(${m.left},0)`);
   const data=cs.sst.map(d=>({date:d.date instanceof Date?d.date:new Date(d.date),anom:d.anom}));
   const x=d3.scaleTime().domain(d3.extent(data,d=>d.date)).range([0,iW]);
   const ymax=Math.max(2.8,d3.max(data,d=>d.anom)+.3);
   const y=d3.scaleLinear().domain([-.5,ymax]).range([iH,0]);
   g.append("g").attr("class","grid").call(d3.axisLeft(y).ticks(4).tickSize(-iW).tickFormat(""));
+  const labelRows=[8,20];
+  const placedLabels=[];
   cs.mhw.forEach(p=>{
     const ps=p.start instanceof Date?p.start:new Date(p.start);
     const pe=p.end instanceof Date?p.end:new Date(p.end);
     const x0=x(ps),x1=x(pe);
     g.append("rect").attr("x",x0).attr("y",0).attr("width",Math.max(0,x1-x0)).attr("height",iH).attr("fill","#E8572A").attr("fill-opacity",.09);
-    g.append("text").attr("x",x0+4).attr("y",11).attr("font-family","IBM Plex Mono,monospace").attr("font-size",9).attr("fill","#E8572A").text(p.label);
+    const text=labelG.append("text").attr("x",x0+4).attr("y",labelRows[0]).attr("dominant-baseline","hanging")
+      .attr("font-family","IBM Plex Mono,monospace").attr("font-size",9).attr("fill","#E8572A").text(p.label);
+    let bb=text.node().getBBox();
+    let row=0;
+    for(let i=0;i<placedLabels.length;i++){
+      const prev=placedLabels[i];
+      if(prev.row===row&&bb.x<prev.x1&&prev.x0<bb.x+bb.width){
+        row=1;
+        text.attr("y",labelRows[row]);
+        bb=text.node().getBBox();
+      }
+    }
+    placedLabels.push({x0:bb.x,x1:bb.x+bb.width,row});
   });
   g.append("line").attr("x1",0).attr("x2",iW).attr("y1",y(0)).attr("y2",y(0)).attr("stroke","#2E7DAF").attr("stroke-width",.8).attr("stroke-dasharray","3,3");
   g.append("path").datum(data).attr("d",d3.area().x(d=>x(d.date)).y0(y(0)).y1(d=>y(d.anom)).curve(d3.curveCatmullRom)).attr("fill","#2E7DAF").attr("fill-opacity",.07);
   g.append("path").datum(data).attr("d",d3.line().x(d=>x(d.date)).y(d=>y(d.anom)).curve(d3.curveCatmullRom)).attr("fill","none").attr("stroke","#2E7DAF").attr("stroke-width",1.8);
   g.append("g").attr("class","axis").attr("transform",`translate(0,${iH})`).call(d3.axisBottom(x).ticks(6).tickFormat(d3.timeFormat("%Y")));
-  g.append("g").attr("class","axis").call(d3.axisLeft(y).ticks(4).tickFormat(d=>d>0?`+${d}`:d));
-  g.append("text").attr("class","axis-lbl").attr("transform","rotate(-90)").attr("x",-iH/2).attr("y",-33).attr("text-anchor","middle").text("SST anomaly (°C)");
+  g.append("g").attr("class","axis").call(d3.axisLeft(y).ticks(4).tickFormat(formatAxisTick));
+  g.append("text").attr("class","axis-lbl").attr("transform","rotate(-90)").attr("x",-iH/2).attr("y",-33).attr("text-anchor","middle").text("SST anomaly ("+tempUnitSymbol()+")");
   const bis=d3.bisector(d=>d.date).left;
   const vl=g.append("line").attr("y1",0).attr("y2",iH).attr("stroke","#1A3A4A").attr("stroke-width",1).attr("stroke-dasharray","3,3").style("opacity",0);
   const dot=g.append("circle").attr("r",3.5).attr("fill","#E8572A").attr("stroke","#fff").attr("stroke-width",1.5).style("opacity",0);
   g.append("rect").attr("width",iW).attr("height",iH).attr("fill","transparent")
-    .on("mousemove",function(e){const[mx]=d3.pointer(e);const d=data[Math.min(bis(data,x.invert(mx)),data.length-1)];vl.attr("x1",x(d.date)).attr("x2",x(d.date)).style("opacity",1);dot.attr("cx",x(d.date)).attr("cy",y(d.anom)).style("opacity",1);showTip(`${d3.timeFormat("%b %Y")(d.date)}<br>${d.anom>=0?"+":""}${d.anom.toFixed(1)}°C anomaly`,e);})
+    .on("mousemove",function(e){const[mx]=d3.pointer(e);const d=data[Math.min(bis(data,x.invert(mx)),data.length-1)];vl.attr("x1",x(d.date)).attr("x2",x(d.date)).style("opacity",1);dot.attr("cx",x(d.date)).attr("cy",y(d.anom)).style("opacity",1);showTip(`${d3.timeFormat("%b %Y")(d.date)}<br>${formatTempAnom(d.anom,{signed:true,decimals:1})} anomaly`,e);})
     .on("mouseleave",()=>{vl.style("opacity",0);dot.style("opacity",0);hideTip()})
     .on("mousemove.m",moveTip);
 }
@@ -1237,7 +1568,8 @@ function updatePeakBand(key){
   const cs=CASES[key],fill=document.getElementById("bar-fill");
   fill.style.background=cs.barColor;fill.style.width="0%";
   setTimeout(()=>{fill.style.width=cs.peakPct+"%"},60);
-  document.getElementById("peak-val").textContent=`+${cs.peakAnomaly.toFixed(1)}`;
+  document.getElementById("peak-val").textContent=formatTempAnom(cs.peakAnomaly,{signed:true,decimals:1,withUnit:false});
+  syncPeakUnitSuffix();
   const ctx=document.getElementById("peak-context");
   if(ctx)ctx.textContent=cs.peakContext||"";
 }
@@ -1295,15 +1627,17 @@ document.querySelectorAll("#eco-toggle button").forEach(btn=>{
   const CASE_IDS=["ningaloo","blob","tasman","gbr","ne_atlantic"];
   function parseHash(){
     const raw=(location.hash||"").replace(/^#/,"");
-    if(!raw || raw==="home" || raw==="dashboard") return {view:"home"};
+    if(!raw || raw==="intro" || raw==="dashboard") return {view:"intro"};
+    if(raw==="home") return {view:"home"};
     if(raw==="cases") return {view:"cases"};
     if(raw==="methods") return {view:"methods"};
     const m=raw.match(/^case\/([\w]+)$/);
     if(m && CASE_IDS.indexOf(m[1])>=0) return {view:"case", caseId:m[1]};
-    return {view:"home"};
+    return {view:"intro"};
   }
   function hashFor(state){
     if(state.view==="case") return "#case/"+state.caseId;
+    if(state.view==="intro") return "#intro";
     if(state.view==="home") return "#home";
     return "#"+state.view;
   }
@@ -1316,11 +1650,13 @@ document.querySelectorAll("#eco-toggle button").forEach(btn=>{
       if(state.indexOf("case/")===0) state={view:"case", caseId:state.slice(5)};
       else state={view:state};
     }
+    const intro=document.getElementById("view-intro");
     const home=document.getElementById("view-home");
     const cases=document.getElementById("view-cases");
     const detail=document.getElementById("view-case");
     const meth=document.getElementById("view-methods");
-    if(!home||!cases||!detail||!meth) return;
+    if(!intro||!home||!cases||!detail||!meth) return;
+    intro.hidden = state.view!=="intro";
     home.hidden = state.view!=="home";
     cases.hidden = state.view!=="cases";
     detail.hidden = state.view!=="case";
@@ -1331,10 +1667,11 @@ document.querySelectorAll("#eco-toggle button").forEach(btn=>{
     try{ history.replaceState(null,"", hashFor(state)); }catch(e){}
     window.scrollTo(0,0);
     requestAnimationFrame(function(){
-      document.body.classList.toggle("view-is-home", state.view==="home");
+      document.body.classList.toggle("view-is-intro", state.view==="intro");
       const hdr=document.getElementById("site-header");
-      if(hdr) hdr.hidden = state.view==="home";
-      if(state.view==="home" && typeof drawHomeSparkline==="function") drawHomeSparkline();
+      if(hdr) hdr.hidden = state.view==="intro";
+      if(state.view==="intro" && typeof drawHomeSparkline==="function") drawHomeSparkline();
+      if(state.view==="home" && typeof drawOverviewCharts==="function") drawOverviewCharts();
       if(state.view==="case"){
         const id=state.caseId||(typeof active!=="undefined"?active:"blob");
         document.querySelectorAll(".case-btn").forEach(function(b){
@@ -1360,9 +1697,11 @@ document.querySelectorAll("#eco-toggle button").forEach(btn=>{
 })();
 window.addEventListener("resize",()=>{clearTimeout(window._rt);window._rt=setTimeout(()=>{
   const detail=document.getElementById("view-case");
+  const intro=document.getElementById("view-intro");
   const home=document.getElementById("view-home");
   if(detail && !detail.hidden) render(active);
-  if(home && !home.hidden && typeof drawHomeSparkline==="function") drawHomeSparkline();
+  if(intro && !intro.hidden && typeof drawHomeSparkline==="function") drawHomeSparkline();
+  if(home && !home.hidden && typeof drawOverviewCharts==="function") drawOverviewCharts();
 },150)});
 
 // ── HOME SPARKLINE (ERSST 1981–present overlay) ─────────────────────────────
@@ -1456,14 +1795,308 @@ async function drawHomeSparkline() {
   }
 }
 
+// ── OVERVIEW HOME CHARTS ────────────────────────────────────────────────────
+
+function overviewChartWidth(svgId, fallback) {
+  const el = document.getElementById(svgId);
+  if (!el) return fallback || 640;
+  const wrap = el.parentElement;
+  return Math.max((wrap && wrap.clientWidth) || el.clientWidth || fallback || 640, 280);
+}
+
+function drawOverviewSst() {
+  const svg = d3.select("#overview-sst-chart");
+  const callouts = document.getElementById("overview-sst-callouts");
+  if (svg.empty()) return;
+  const W = overviewChartWidth("overview-sst-chart", 640);
+  const H = Math.round(Math.min(320, Math.max(220, W * 0.38)));
+  const m = {top: 16, right: 16, bottom: 32, left: 44};
+  const iW = W - m.left - m.right;
+  const iH = H - m.top - m.bottom;
+  svg.selectAll("*").remove();
+  svg.attr("viewBox", `0 0 ${W} ${H}`).attr("width", null).attr("height", null);
+
+  const ersst = (PIPELINE.global_ersst || []).filter(d => d.anom != null);
+  const oisst = (PIPELINE.global_oisst || []).filter(d => d.anom != null);
+  if (!ersst.length && !oisst.length) {
+    if (callouts) callouts.innerHTML = '<span class="overview-sst-callout">Run <code>ohsi_preprocessing.py</code> to load NOAA data</span>';
+    return;
+  }
+
+  const years = [];
+  ersst.forEach(d => years.push(d.year));
+  oisst.forEach(d => years.push(d.year));
+  const x = d3.scaleLinear().domain(d3.extent(years)).range([0, iW]);
+  const all = ersst.map(d => d.anom).concat(oisst.map(d => d.anom));
+  const y0 = Math.min(0, d3.min(all));
+  const y1 = d3.max(all);
+  const pad = (y1 - y0) * 0.08 || 0.05;
+  const y = d3.scaleLinear().domain([y0 - pad, y1 + pad]).range([iH, 0]);
+  const g = svg.append("g").attr("transform", `translate(${m.left},${m.top})`);
+
+  g.append("g").attr("class", "grid").call(d3.axisLeft(y).ticks(5).tickSize(-iW).tickFormat(""));
+  if (y0 < 0 && y1 > 0) {
+    g.append("line").attr("x1", 0).attr("x2", iW).attr("y1", y(0)).attr("y2", y(0))
+      .attr("stroke", "var(--rule)").attr("stroke-dasharray", "4,4");
+  }
+  const line = d3.line().x(d => x(d.year)).y(d => y(d.anom)).curve(d3.curveMonotoneX);
+  if (ersst.length) {
+    g.append("path").datum(ersst).attr("fill", "none").attr("stroke", "var(--blue)")
+      .attr("stroke-width", 2).attr("d", line);
+  }
+  if (oisst.length) {
+    g.append("path").datum(oisst).attr("fill", "none").attr("stroke", "var(--heat)")
+      .attr("stroke-width", 2).attr("stroke-dasharray", "5,3").attr("d", line);
+  }
+  g.append("g").attr("transform", `translate(0,${iH})`).call(d3.axisBottom(x).ticks(6).tickFormat(d3.format("d")))
+    .selectAll("text").attr("fill", "var(--gray)").attr("font-size", 10);
+  g.append("g").call(d3.axisLeft(y).ticks(5).tickFormat(d => formatTempAnom(d, {signed: true, decimals: 1})))
+    .selectAll("text").attr("fill", "var(--gray)").attr("font-size", 10);
+
+  if (callouts) {
+    const recent = ersst.filter(d => d.year >= 1981);
+    const parts = [];
+    if (ersst.length) {
+      const last = ersst[ersst.length - 1];
+      parts.push(`<span class="overview-sst-callout">Latest ERSST <strong>${formatTempAnom(last.anom,{signed:true,decimals:2})}</strong> (${last.year})</span>`);
+    }
+    if (recent.length >= 2) {
+      const dlt = recent[recent.length - 1].anom - recent[0].anom;
+      parts.push(`<span class="overview-sst-callout">1981\u2192present <strong>${formatTempAnom(dlt,{signed:true,decimals:2})}</strong></span>`);
+    }
+    callouts.innerHTML = parts.join("");
+  }
+}
+
+function ensoBarOpacity(peak) {
+  const a = Math.abs(peak);
+  if (a >= 2.0) return 1;
+  if (a >= 1.5) return 0.88;
+  if (a >= 1.0) return 0.72;
+  return 0.55;
+}
+
+function fillOverviewEvidence() {
+  const sstLi = document.getElementById("overview-evidence-sst");
+  if (!sstLi) return;
+  const ersst = (PIPELINE.global_ersst || []).filter(d => d.anom != null);
+  const recent = ersst.filter(d => d.year >= 1981);
+  if (!ersst.length) {
+    sstLi.innerHTML = 'Global ocean SST anomaly from NOAA ERSSTv6 <span class="overview-evidence-src">(run pipeline)</span>';
+    return;
+  }
+  const last = ersst[ersst.length - 1];
+  let txt = `Latest global ocean anomaly ${formatTempAnom(last.anom,{signed:true,decimals:2})} (${last.year})`;
+  if (recent.length >= 2) {
+    const dlt = recent[recent.length - 1].anom - recent[0].anom;
+    txt += `; ${recent[0].year}\u2192${recent[recent.length - 1].year} change ${formatTempAnom(dlt,{signed:true,decimals:2})}`;
+  }
+  sstLi.innerHTML = `${txt} <span class="overview-evidence-src">NOAA ERSSTv6 · 1971\u20132000 baseline</span>`;
+}
+
+function drawEnsoTimeline() {
+  const svg = d3.select("#overview-enso-timeline");
+  const note = document.getElementById("overview-enso-timeline-note");
+  if (svg.empty()) return;
+  const payload = PIPELINE.oni;
+  const startIso = `${ensoTimelineStart}-01-01`;
+  const episodes = (payload && payload.episodes) ? payload.episodes.filter(e => e.start >= startIso) : [];
+  const W = overviewChartWidth("overview-enso-timeline", 640);
+  const laneH = 22;
+  const laneGap = 28;
+  const m = {top: 12, right: 12, bottom: 32, left: 44};
+  const H = m.top + m.bottom + laneH * 2 + laneGap + 16;
+  svg.selectAll("*").remove();
+  svg.attr("viewBox", `0 0 ${W} ${H}`).attr("width", null).attr("height", null);
+
+  if (note) {
+    note.textContent = ensoTimelineStart === 1950
+      ? "1950\u2013present (CPC ONI). Pre-1980 values use ship-based SST reconstruction. Switch to 1982 for the satellite era."
+      : "1982\u2013present, aligned with the OISST satellite record.";
+  }
+
+  if (!episodes.length) {
+    svg.append("text").attr("x", W / 2).attr("y", H / 2).attr("text-anchor", "middle")
+      .attr("fill", "var(--gray)").attr("font-size", 12).text("ONI data unavailable");
+    return;
+  }
+
+  const x = d3.scaleTime()
+    .domain([new Date(startIso), d3.max(episodes, e => new Date(e.end))])
+    .range([0, W - m.left - m.right]);
+  const g = svg.append("g").attr("transform", `translate(${m.left},${m.top})`);
+  const lanes = {el_nino: 0, la_nina: laneH + laneGap};
+
+  g.append("text").attr("x", 0).attr("y", lanes.el_nino + 14).attr("fill", "var(--gray)")
+    .attr("font-family", "IBM Plex Mono, monospace").attr("font-size", 9).text("El Niño");
+  g.append("text").attr("x", 0).attr("y", lanes.la_nina + 14).attr("fill", "var(--gray)")
+    .attr("font-family", "IBM Plex Mono, monospace").attr("font-size", 9).text("La Niña");
+
+  episodes.forEach((ep) => {
+    const y0 = lanes[ep.phase];
+    const x0 = x(new Date(ep.start));
+    const x1 = x(new Date(ep.end));
+    const w = Math.max(x1 - x0, 2);
+    const fill = ep.phase === "el_nino" ? "#E8572A" : "#2E7DAF";
+    const tip = `${ep.phase === "el_nino" ? "El Niño" : "La Niña"} · ${ep.start.slice(0, 7)}–${ep.end.slice(0, 7)} · peak ${formatTempAnom(ep.peak_oni,{signed:true,decimals:1})}`;
+    g.append("rect").attr("x", x0).attr("y", y0).attr("width", w).attr("height", laneH)
+      .attr("fill", fill).attr("opacity", ensoBarOpacity(ep.peak_oni))
+      .append("title").text(tip);
+  });
+
+  g.append("g").attr("transform", `translate(0,${laneH * 2 + laneGap + 8})`)
+    .call(d3.axisBottom(x).ticks(6).tickFormat(d3.timeFormat("%Y")))
+    .selectAll("text").attr("fill", "var(--gray)").attr("font-size", 10);
+}
+
+function drawEnsoDecade() {
+  const svg = d3.select("#overview-enso-decade");
+  const note = document.getElementById("overview-enso-decade-note");
+  if (svg.empty()) return;
+  const payload = PIPELINE.oni;
+  const latestYear = (payload && payload.latest_year) || new Date().getFullYear();
+  const rows = ((payload && payload.decade_summary) || []).filter(d => d.decade_start >= 1950);
+  const W = overviewChartWidth("overview-enso-decade", 360);
+  const m = {top: 12, right: 12, bottom: 8, left: 36};
+  const barH = 14;
+  const groupGap = 10;
+  const H = m.top + m.bottom + rows.length * (barH * 2 + groupGap + 14);
+  svg.selectAll("*").remove();
+  svg.attr("viewBox", `0 0 ${W} ${H}`).attr("width", null).attr("height", null);
+
+  if (!rows.length) {
+    if (note) note.textContent = "";
+    svg.append("text").attr("x", W / 2).attr("y", H / 2).attr("text-anchor", "middle")
+      .attr("fill", "var(--gray)").attr("font-size", 12).text("ONI data unavailable");
+    return;
+  }
+
+  const maxCount = d3.max(rows, d => Math.max(d.el_nino_count, d.la_nina_count, 1));
+  const x = d3.scaleLinear().domain([0, maxCount]).range([0, W - m.left - m.right]);
+  const g = svg.append("g").attr("transform", `translate(${m.left},${m.top})`);
+  let yOff = 0;
+
+  rows.forEach(row => {
+    const decadeLabel = row.decade + (row.is_partial ? " (partial)" : "");
+    g.append("text").attr("x", 0).attr("y", yOff + 10).attr("fill", "var(--ink)")
+      .attr("font-family", "IBM Plex Mono, monospace").attr("font-size", 9).text(decadeLabel);
+    yOff += 14;
+    g.append("rect").attr("x", 0).attr("y", yOff).attr("width", x(row.el_nino_count)).attr("height", barH)
+      .attr("fill", "#E8572A").attr("opacity", 0.85);
+    const enLabel = row.el_nino_count === 1 ? "episode" : "episodes";
+    g.append("text").attr("x", x(row.el_nino_count) + 4).attr("y", yOff + barH - 3)
+      .attr("fill", "var(--gray)").attr("font-size", 9)
+      .text(`El Niño · ${row.el_nino_count} ${enLabel}`);
+    yOff += barH + 3;
+    g.append("rect").attr("x", 0).attr("y", yOff).attr("width", x(row.la_nina_count)).attr("height", barH)
+      .attr("fill", "#2E7DAF").attr("opacity", 0.85);
+    const lnLabel = row.la_nina_count === 1 ? "episode" : "episodes";
+    g.append("text").attr("x", x(row.la_nina_count) + 4).attr("y", yOff + barH - 3)
+      .attr("fill", "var(--gray)").attr("font-size", 9)
+      .text(`La Niña · ${row.la_nina_count} ${lnLabel}`);
+    yOff += barH + groupGap;
+  });
+
+  if (note) {
+    note.textContent = `Episodes assigned to the decade of their peak ONI. 2020s includes only years through ${latestYear}. Partial decades are not comparable to full decades. Counts are not severity scores.`;
+  }
+}
+
+function drawEnsoSeverity() {
+  const svg = d3.select("#overview-enso-severity");
+  if (svg.empty()) return;
+  const rows = ((PIPELINE.oni && PIPELINE.oni.decade_summary) || []).filter(d => d.decade_start >= 1950 && d.max_abs_peak_oni != null);
+  const W = overviewChartWidth("overview-enso-severity", 360);
+  const m = {top: 12, right: 12, bottom: 36, left: 36};
+  const barW = 18;
+  const chartH = 120;
+  const H = m.top + chartH + m.bottom;
+  svg.selectAll("*").remove();
+  svg.attr("viewBox", `0 0 ${W} ${H}`).attr("width", null).attr("height", null);
+
+  if (!rows.length) {
+    svg.append("text").attr("x", W / 2).attr("y", H / 2).attr("text-anchor", "middle")
+      .attr("fill", "var(--gray)").attr("font-size", 12).text("ONI data unavailable");
+    return;
+  }
+
+  const maxPeak = d3.max(rows, d => d.max_abs_peak_oni) || 2.5;
+  const y = d3.scaleLinear().domain([0, maxPeak * 1.08]).range([chartH, 0]);
+  const g = svg.append("g").attr("transform", `translate(${m.left},${m.top})`);
+  const iW = W - m.left - m.right;
+
+  g.append("g").call(d3.axisLeft(y).ticks(4).tickFormat(d => formatTempAnom(d, {signed: false, decimals: 1})))
+    .selectAll("text").attr("fill", "var(--gray)").attr("font-size", 9);
+  g.append("line").attr("x1", 0).attr("x2", iW).attr("y1", y(1.5)).attr("y2", y(1.5))
+    .attr("stroke", "var(--rule)").attr("stroke-dasharray", "3,3");
+  g.append("text").attr("x", iW).attr("y", y(1.5) - 4).attr("text-anchor", "end")
+    .attr("fill", "var(--gray)").attr("font-size", 8).text("strong (" + formatTempAnom(1.5, {decimals: 1}) + ")");
+
+  const step = iW / rows.length;
+  rows.forEach((row, i) => {
+    const cx = step * i + step / 2;
+    const h = chartH - y(row.max_abs_peak_oni);
+    const fill = row.max_peak_phase === "el_nino" ? "#E8572A" : "#2E7DAF";
+    g.append("rect")
+      .attr("x", cx - barW / 2)
+      .attr("y", y(row.max_abs_peak_oni))
+      .attr("width", barW)
+      .attr("height", Math.max(h, 2))
+      .attr("fill", fill)
+      .attr("opacity", 0.88)
+      .append("title")
+      .text(`${row.decade}: peak ${formatTempAnom(row.max_peak_oni,{signed:true,decimals:1})} (${row.max_peak_phase === "el_nino" ? "El Niño" : "La Niña"})`);
+    const xLabel = row.decade.replace("s", "") + (row.is_partial ? "*" : "");
+    g.append("text").attr("x", cx).attr("y", chartH + 14).attr("text-anchor", "middle")
+      .attr("fill", "var(--gray)").attr("font-family", "IBM Plex Mono, monospace").attr("font-size", 8)
+      .text(xLabel);
+  });
+
+  const partial = rows.some(r => r.is_partial);
+  if (partial) {
+    g.append("text").attr("x", 0).attr("y", chartH + 26).attr("fill", "var(--gray)")
+      .attr("font-size", 8).text("* partial decade");
+  }
+}
+
+function drawOverviewCharts() {
+  fillOverviewEvidence();
+  drawOverviewSst();
+  drawEnsoTimeline();
+  drawEnsoDecade();
+  drawEnsoSeverity();
+}
+
+document.querySelectorAll(".enso-range-btn").forEach(function(btn) {
+  btn.addEventListener("click", function() {
+    const val = parseInt(btn.getAttribute("data-enso-range"), 10);
+    if (!val || val === ensoTimelineStart) return;
+    ensoTimelineStart = val;
+    document.querySelectorAll(".enso-range-btn").forEach(function(b) {
+      b.classList.toggle("active", b === btn);
+    });
+    drawEnsoTimeline();
+  });
+});
+
+document.querySelectorAll("[data-temp-unit]").forEach(function(btn) {
+  btn.addEventListener("click", function() {
+    setTempUnit(btn.getAttribute("data-temp-unit"));
+  });
+});
+
 // ── INIT ────────────────────────────────────────────────────────────────────
 
 (async function init(){
+  syncTempUnitToggle();
+  syncPeakUnitSuffix();
   await loadPipelineData();
   buildResources();
+  const intro=document.getElementById("view-intro");
   const home=document.getElementById("view-home");
   const detail=document.getElementById("view-case");
-  if(home && !home.hidden && typeof drawHomeSparkline==="function") await drawHomeSparkline();
+  if(intro && !intro.hidden && typeof drawHomeSparkline==="function") await drawHomeSparkline();
+  if(home && !home.hidden && typeof drawOverviewCharts==="function") drawOverviewCharts();
   if(detail && !detail.hidden) render(active);
   else if(typeof window.setAppView==="function" && (location.hash||"").indexOf("case/")>=0){
     /* hash router already requested case; re-render after pipeline load */

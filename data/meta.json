@@ -41,5 +41,10 @@
   "ersst_years": "1850-2025",
   "ersst_status": "ok",
   "oisst_global_years": "1982-2025",
-  "oisst_global_status": "ok"
+  "oisst_global_status": "ok",
+  "oni_status": "ok",
+  "oni_source": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+  "oni_episodes": 42,
+  "oni_seasons": 918,
+  "oni_latest_year": 2026
 }

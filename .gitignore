@@ -35,6 +35,7 @@ credentials.json
 # Editor
 .vscode/
 .idea/
+.cursor/
 *.swp
 *~
 

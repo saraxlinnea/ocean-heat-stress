@@ -10,7 +10,7 @@ Your local machine does not need to stay on after you start it.
 WHAT THIS SCRIPT DOES:
   1. Fetches the NOAAGlobalTemp v6 ocean annual anomaly series (1880-present)
      directly from NCEI as a plain text file.
-  2. Fetches OISST v2.1 global annual mean anomaly (1981-present) from ERDDAP,
+  2. Fetches OISST v2.1 global annual mean anomaly (1982-present) from ERDDAP,
      as a second independent satellite-era series.
   3. Fetches regional SST for the two case study regions (Gulf of Alaska, GBR)
      and runs Hobday et al. 2016 marine heatwave detection.
@@ -28,7 +28,8 @@ USAGE:
 
 OUTPUTS (written to ./data/):
   global_ersst.json    NOAAGlobalTemp ocean annual anomaly 1880-present
-  global_oisst.json    OISST v2.1 global annual anomaly 1981-present
+  global_oisst.json    OISST v2.1 global annual anomaly 1982-present
+  oni.json             NOAA CPC Oceanic Niño Index (seasonal) + derived episodes
   blob_sst.json        Monthly SST anomaly, Gulf of Alaska
   gbr_sst.json         Monthly SST anomaly, Great Barrier Reef
   blob_mhw.json        MHW events (Hobday), Gulf of Alaska
@@ -78,6 +79,21 @@ ERDDAP_RETRY_STATUSES = {408, 429, 500, 502, 503, 504}
 ERDDAP_TIMEOUT_S      = 180
 OISST_GLOBAL_STRIDE   = 8
 OISST_REGION_STRIDE   = 8
+
+# NOAA CPC Oceanic Niño Index (ONI) — seasonal overlapping 3-month means.
+# Not RONI (CPC official monitoring index since Feb 2026). Kept for literature parity.
+CPC_ONI_URL = "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt"
+ONI_THRESHOLD = 0.5
+ONI_MIN_SEASONS = 5
+ONI_SEASON_ORDER = (
+    "DJF", "JFM", "FMA", "MAM", "AMJ", "MJJ", "JJA", "JAS", "ASO", "SON", "OND", "NDJ",
+)
+# First month of each overlapping CPC season label (year rules vary for DJF/NDJ).
+ONI_SEASON_START = {
+    "DJF": (12, -1), "JFM": (1, 0), "FMA": (2, 0), "MAM": (3, 0),
+    "AMJ": (4, 0), "MJJ": (5, 0), "JJA": (6, 0), "JAS": (7, 0),
+    "ASO": (8, 0), "SON": (9, 0), "OND": (10, 0), "NDJ": (11, 0),
+}
 OISST_MIN_GLOBAL_YEARS = 20  # below this, treat global OISST as failed
 OISST_GLOBAL_START    = 1981
 
@@ -582,6 +598,187 @@ def monthly_anomaly(daily_df, clim):
             for _, r in m.iterrows() if pd.notna(r["anom"])]
 
 
+# ── ENSO: NOAA CPC Oceanic Niño Index (ONI) ───────────────────────────────────
+
+def _season_bounds(season, year):
+    """Return (start_iso, end_iso) for a CPC overlapping season row."""
+    start_m, y_off = ONI_SEASON_START[season]
+    y0 = year + y_off
+    start = pd.Timestamp(year=y0, month=start_m, day=1)
+    end = start + pd.DateOffset(months=3) - pd.DateOffset(days=1)
+    return start.strftime("%Y-%m-%d"), end.strftime("%Y-%m-%d")
+
+
+def _oni_strength(peak):
+    a = abs(float(peak))
+    if a >= 2.0:
+        return "very_strong"
+    if a >= 1.5:
+        return "strong"
+    if a >= 1.0:
+        return "moderate"
+    return "weak"
+
+
+def fetch_cpc_oni():
+    """
+    Fetch NOAA CPC ONI seasonal table (ERSSTv6-based as published on CPC).
+
+    Format: SEAS YR TOTAL ANOM  (space-delimited, overlapping 3-month seasons)
+    """
+    print(f"  Fetching CPC ONI...")
+    print(f"    {CPC_ONI_URL}")
+    resp = get(CPC_ONI_URL, timeout=60, max_attempts=4, retry_statuses={429, 500, 502, 503, 504})
+    seasons = []
+    for line in resp.text.splitlines():
+        line = line.strip()
+        if not line or line.startswith("SEAS"):
+            continue
+        parts = line.split()
+        if len(parts) < 4:
+            continue
+        label, yr, _total, anom = parts[0], int(parts[1]), parts[2], float(parts[3])
+        if label not in ONI_SEASON_ORDER:
+            continue
+        start, end = _season_bounds(label, yr)
+        seasons.append({
+            "season": label,
+            "year": yr,
+            "oni": round(anom, 2),
+            "start": start,
+            "end": end,
+        })
+    if not seasons:
+        raise ValueError("CPC ONI parsed to zero seasons")
+    seasons.sort(key=lambda r: (r["start"]))
+    print(f"    {len(seasons)} seasons, {seasons[0]['start'][:4]} to {seasons[-1]['end'][:4]}")
+    return seasons
+
+
+def detect_oni_episodes(seasons):
+    """
+    CPC-style episodes: |ONI| >= threshold for >= ONI_MIN_SEASONS consecutive rows.
+    """
+    episodes = []
+    i = 0
+    n = len(seasons)
+    while i < n:
+        oni = seasons[i]["oni"]
+        if oni >= ONI_THRESHOLD:
+            phase = "el_nino"
+        elif oni <= -ONI_THRESHOLD:
+            phase = "la_nina"
+        else:
+            i += 1
+            continue
+        j = i
+        while j < n:
+            v = seasons[j]["oni"]
+            if phase == "el_nino" and v >= ONI_THRESHOLD:
+                j += 1
+            elif phase == "la_nina" and v <= -ONI_THRESHOLD:
+                j += 1
+            else:
+                break
+        if j - i >= ONI_MIN_SEASONS:
+            seg = seasons[i:j]
+            peak_row = max(seg, key=lambda r: abs(r["oni"]))
+            episodes.append({
+                "phase": phase,
+                "start": seg[0]["start"],
+                "end": seg[-1]["end"],
+                "duration_seasons": len(seg),
+                "peak_oni": peak_row["oni"],
+                "peak_season": f"{peak_row['season']} {peak_row['year']}",
+                "strength": _oni_strength(peak_row["oni"]),
+            })
+            i = j
+        else:
+            i += 1
+    return episodes
+
+
+def _episode_peak_year(ep):
+    if ep.get("peak_season"):
+        try:
+            return int(ep["peak_season"].split()[-1])
+        except (ValueError, IndexError):
+            pass
+    return int(ep["start"][:4])
+
+
+def oni_decade_summary(episodes, latest_year=None):
+    """Count episodes and severity metrics by decade of peak |ONI| year."""
+    buckets = {}
+    for ep in episodes:
+        peak_year = _episode_peak_year(ep)
+        decade = (peak_year // 10) * 10
+        label = f"{decade}s"
+        b = buckets.setdefault(label, {
+            "decade": label,
+            "decade_start": decade,
+            "el_nino_count": 0,
+            "la_nina_count": 0,
+            "strong_or_greater": 0,
+            "episode_count": 0,
+            "episodes": [],
+        })
+        b["episode_count"] += 1
+        b["episodes"].append(ep)
+        if ep["phase"] == "el_nino":
+            b["el_nino_count"] += 1
+        else:
+            b["la_nina_count"] += 1
+        if abs(ep["peak_oni"]) >= 1.5:
+            b["strong_or_greater"] += 1
+
+    out = []
+    for label in sorted(buckets, key=lambda k: buckets[k]["decade_start"]):
+        b = buckets[label]
+        eps = b.pop("episodes")
+        n = b["episode_count"] or 1
+        b["strong_or_greater_share"] = round(b["strong_or_greater"] / n, 3)
+        peaks = [abs(ep["peak_oni"]) for ep in eps]
+        if peaks:
+            max_ep = max(eps, key=lambda e: abs(e["peak_oni"]))
+            b["max_abs_peak_oni"] = round(max(peaks), 2)
+            b["mean_abs_peak_oni"] = round(sum(peaks) / len(peaks), 2)
+            b["max_peak_oni"] = max_ep["peak_oni"]
+            b["max_peak_phase"] = max_ep["phase"]
+        else:
+            b["max_abs_peak_oni"] = None
+            b["mean_abs_peak_oni"] = None
+            b["max_peak_oni"] = None
+            b["max_peak_phase"] = None
+        b["very_strong_count"] = sum(1 for ep in eps if abs(ep["peak_oni"]) >= 2.0)
+        decade_end = b["decade_start"] + 9
+        b["is_partial"] = bool(
+            latest_year is not None and b["decade_start"] <= latest_year <= decade_end
+            and latest_year < decade_end
+        )
+        out.append(b)
+    return out
+
+
+def build_oni_payload(seasons, episodes):
+    latest_year = max(s["year"] for s in seasons) if seasons else None
+    return {
+        "index": "ONI",
+        "source": "NOAA CPC Oceanic Niño Index (oni.ascii.txt, ERSSTv6)",
+        "source_url": CPC_ONI_URL,
+        "note": (
+            "Classic ONI (not RONI). 3-month running mean Niño 3.4 anomaly. "
+            "Episodes: ±0.5°C for ≥5 consecutive overlapping seasons (CPC convention)."
+        ),
+        "threshold_c": ONI_THRESHOLD,
+        "min_seasons": ONI_MIN_SEASONS,
+        "latest_year": latest_year,
+        "seasons": seasons,
+        "episodes": episodes,
+        "decade_summary": oni_decade_summary(episodes, latest_year),
+    }
+
+
 # ── ECOSYSTEM DATA (survey-based, hardcoded from literature) ──────────────────
 
 ECOSYSTEM = {
@@ -698,6 +895,24 @@ def main():
         meta["oisst_global_status"] = "failed"
     print()
 
+    try:
+        oni_seasons = fetch_cpc_oni()
+        oni_episodes = detect_oni_episodes(oni_seasons)
+        oni_payload = build_oni_payload(oni_seasons, oni_episodes)
+        save(oni_payload, "oni.json")
+        meta["oni_status"] = "ok"
+        meta["oni_source"] = CPC_ONI_URL
+        meta["oni_episodes"] = len(oni_episodes)
+        meta["oni_seasons"] = len(oni_seasons)
+        print(f"  ONI episodes detected: {len(oni_episodes)}")
+        for ep in oni_episodes[-6:]:
+            print(f"    {ep['phase']} {ep['start'][:7]}–{ep['end'][:7]}  "
+                  f"peak {ep['peak_oni']:+.2f}°C ({ep['strength']})")
+    except Exception as e:
+        print(f"  ONI fetch failed: {e}")
+        meta["oni_status"] = "failed"
+    print()
+
     # ── Step 2: Regional case studies ─────────────────────────────────────
     for key, region in REGIONS.items():
         print(f"[{key.upper()}] {region['name']}")
@@ -788,6 +1003,7 @@ def main():
     print("Done.")
     print(f"  ERSST: {meta.get('ersst_status')}")
     print(f"  OISST global: {meta.get('oisst_global_status')}")
+    print(f"  ONI: {meta.get('oni_status')}")
     for key, info in meta.get("regions", {}).items():
         print(f"  {key}: {info.get('status')}"
               + (f" ({info['error']})" if info.get("error") else ""))

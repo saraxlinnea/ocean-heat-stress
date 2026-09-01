@@ -84,10 +84,11 @@ Visual work is CSS/layout polish only unless the user expands scope. Keep honest
 - Single deployable `index.html` (vendored D3/topojson + inline CSS/JS)
 - Data from `./data/*.json`
 - Primary views (same ocean chrome):
-  - **Home** (`#home`) — fullscreen photo stage: grand title, tagline, CTA, proof stack, ERSST 1981+ sparkline, condensed foot links. Site header, primary nav, and full footer hidden on this view.
+  - **Intro** (`#intro`) — fullscreen photo stage: grand title, tagline, CTA, proof stack, ERSST 1981+ sparkline, condensed foot links. Site header, primary nav, and full footer hidden on this view. Title click in header returns here.
+  - **Home / Overview** (`#home`) — content-rich overview: proof stats, dual ERSST/OISST chart, CPC ONI episode timeline and decade summary. Header, nav, and footer visible.
   - **Case studies** (`#cases`) — index of five regions; open one to read
   - **Case detail** (`#case/{id}`) — map, peak, SST, eco, interpretation for one case (`ningaloo` | `blob` | `tasman` | `gbr` | `ne_atlantic`)
-  - **Methods & sources** (`#methods`) — provenance, baselines, Hobday notes, resources grid (full global chart context lives here / in methods copy, not on Home)
+  - **Methods & sources** (`#methods`) — provenance, baselines, Hobday notes, resources grid
 - Keep NOAA / illustrative / unverified honesty chrome on case detail charts
 - Footer disclaimer stays across views
 - Spacing uses CSS rhythm tokens `--s1`…`--s5` (8 / 16 / 24 / 40 / 56)

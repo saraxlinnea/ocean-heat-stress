@@ -10,8 +10,9 @@ Status values: **seeded** | **planned** | **blocked**
 
 | Dataset | Unlocks | Status | Notes |
 |---------|---------|--------|-------|
-| NOAAGlobalTemp v6 ocean annual (ERSST) | Home ERSST sparkline | seeded | Direct NCEI ASCII; native 1971–2000 baseline |
-| OISST v2.1 global annual anomaly | Methods / future dual chart | seeded | ERDDAP yearly chunks; 1971–2000 native `anom` |
+| NOAAGlobalTemp v6 ocean annual (ERSST) | Intro sparkline; Overview dual SST chart | seeded | Direct NCEI ASCII; native 1971–2000 baseline |
+| OISST v2.1 global annual anomaly | Overview dual SST chart | seeded | ERDDAP yearly chunks; 1971–2000 native `anom` |
+| NOAA CPC ONI (seasonal) | Overview ENSO timeline + decade bars | seeded | `oni.ascii.txt`; classic ONI (not RONI); derived episodes |
 | OISST regional daily (blob / gbr) | Case SST charts + MHW bands | blocked | Files may be empty `[]` after soft ERDDAP failure. UI must show Illustrative + miss/fail until non-empty. Pipeline reconciles `status: empty`. |
 | Ecosystem literature series | Ecosystem bar charts | seeded | Transcribed / approximate; treat as quarantine-grade until verified |
 | Ningaloo / Tasman / NE Atlantic SST | Those three case SST charts | planned | Illustrative in `index.html` until regional pipeline |
@@ -57,6 +58,42 @@ Status values: **seeded** | **planned** | **blocked**
 | anom | float | °C | vs 1971–2000 |
 
 **Derived:** monthly mid-month samples → annual mean of area-weighted fields
+
+---
+
+### `data/oni.json`
+
+**Source:** NOAA CPC `oni.ascii.txt` (ERSSTv6-based Oceanic Niño Index)
+
+**Top-level fields:**
+
+| Field | Type | Notes |
+|-------|------|-------|
+| index | string | `"ONI"` |
+| source / source_url | string | CPC provenance |
+| note | string | Classic ONI, not RONI; episode rule documented |
+| threshold_c | float | 0.5 |
+| min_seasons | int | 5 |
+| seasons | array | Seasonal ONI rows |
+| episodes | array | Derived El Niño / La Niña episodes |
+| decade_summary | array | Episode counts and strong-share by decade |
+
+**`seasons[]` fields:**
+
+| Column | Type | Notes |
+|--------|------|-------|
+| season | string | CPC label (DJF, JFM, …) |
+| year | int | Season year |
+| oni | float | °C anomaly |
+| start / end | string | ISO date bounds for season window |
+
+**`episodes[]` fields:** phase (`el_nino` \| `la_nina`), start, end, duration_seasons, peak_oni, peak_season, strength (`weak` \| `moderate` \| `strong` \| `very_strong`)
+
+**`decade_summary[]` fields:** decade, decade_start, el_nino_count, la_nina_count, episode_count, strong_or_greater, strong_or_greater_share, max_abs_peak_oni, mean_abs_peak_oni, max_peak_oni, max_peak_phase, very_strong_count, is_partial
+
+**Top-level:** `latest_year` (int, last season year in CPC file)
+
+**Derived:** episodes when |ONI| ≥ 0.5°C for ≥5 consecutive overlapping seasons (CPC convention). Decade summary from episode peak years; `is_partial` true when `latest_year` has not reached decade end.
 
 ---
 
@@ -109,7 +146,7 @@ Status values: **seeded** | **planned** | **blocked**
 
 **Source:** written each pipeline run
 
-**Key statuses:** `ersst_status`, `oisst_global_status`, `regions.<key>.status` (`ok` \| `fetch_failed` \| `failed` \| `empty`), optional `error`, `n_events`, `n_months`
+**Key statuses:** `ersst_status`, `oisst_global_status`, `oni_status`, `regions.<key>.status` (`ok` \| `fetch_failed` \| `failed` \| `empty`), optional `error`, `n_events`, `n_months`
 
 **UI:** `index.html` data-status bar requires **non-empty** JSON arrays for green checks. Meta `ok` alone is not enough. Empty `[]` → miss/fail; case FALLBACK stays Illustrative until `applyRegionalSst` loads rows. Actions exit 0 on soft ERDDAP failure; green workflow ≠ all layers ok.
 

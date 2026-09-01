@@ -14,9 +14,11 @@ Live: [saraxlinnea.github.io/ocean-heat-stress](https://saraxlinnea.github.io/oc
 
 Ocean warming is the long-term trend. Marine heatwaves are the acute events layered on top. When those events cross ecological thresholds, they trigger measurable damage: fishery collapses, coral bleaching, intertidal die-offs.
 
-The site walks **Home → Case studies → Case detail**, with **Methods & sources** for baselines and provenance.
+The site walks **Intro → Home (overview) → Case studies → Case detail**, with **Methods & sources** for baselines and provenance.
 
-**Home.** Fullscreen entrance with a muted ocean photo, three sourced framing figures, and an ERSST anomaly sparkline (1981–present).
+**Intro.** Fullscreen entrance with a muted ocean photo, three sourced framing figures, and an ERSST anomaly sparkline (1981–present). Click the site title to return here.
+
+**Home (overview).** Proof stats, dual global SST chart (ERSST + OISST), and CPC ONI El Niño/La Niña episode charts with decade summaries.
 
 **Case studies.** Five regions. Open one to read the story and inspect charts.
 
@@ -24,11 +26,11 @@ The site walks **Home → Case studies → Case detail**, with **Methods & sourc
 
 **2016 and 2024 GBR bleaching events.** The 2016 event bleached 91% of surveyed Great Barrier Reef structures, with the northern reef (the most remote and least disturbed) hit hardest. In April 2024, NOAA confirmed the fourth global coral bleaching event, the largest on record. The interval between severe bleaching events has collapsed from roughly a decade in the 1980s to near-annual since 2016.
 
-**2011 Ningaloo Niña (Western Australia kelp collapse)**
+**2011 Ningaloo Niña (Western Australia kelp collapse).** A strong La Niña drove warm Leeuwin Current water south along the Western Australian coast in 2010–11. Peak SST anomaly reached 6.8°C in February 2011 (Pearce & Feng 2013; Feng et al. 2013). Wernberg et al. (2013, 2016) documented 43% kelp loss across the west coast and a permanent shift to seaweed turfs.
 
-**2015–16 Tasman Sea heatwave**
+**2015–16 Tasman Sea heatwave.** A 251-day marine heatwave reached 2.9°C above climatology, the longest and most intense on record in the Tasman Sea (Oliver et al. 2017). Pacific oyster mortality syndrome hit Tasmania; abalone mortality was about 5%.
 
-**2023 NE Atlantic basin-scale event**
+**2023 NE Atlantic basin-scale event.** SST anomalies reached +2.9°C above the 1982–2012 shelf climatology for 16 days on the Northwest European Shelf, unprecedented in the satellite era (England et al. 2025). England et al. attribute the event to reduced wind, reduced Saharan dust, and background warming.
 
 Gulf of Alaska and GBR SST / MHW charts use NOAA OISST **when** `data/blob_*.json` and `data/gbr_*.json` are non-empty. If those files are empty, the UI keeps **Illustrative** fallbacks and does not show a NOAA pill. Ningaloo, Tasman, and NE Atlantic SST series are illustrative until pipelined.
 
@@ -39,7 +41,8 @@ Gulf of Alaska and GBR SST / MHW charts use NOAA OISST **when** `data/blob_*.jso
 | Dataset | Source | Used in |
 |---|---|---|
 | NOAA OISST v2.1 | NOAA NCEI via ERDDAP | Global OISST series; Gulf of Alaska & GBR case studies when pipeline JSON is non-empty |
-| NOAAGlobalTemp v6 ocean annual | NOAA NCEI direct ASCII | Home ERSST sparkline (and stored global series) |
+| NOAAGlobalTemp v6 ocean annual | NOAA NCEI direct ASCII | Intro sparkline; Overview dual SST chart |
+| NOAA CPC ONI | CPC `oni.ascii.txt` | Overview ENSO episode timeline and decade bars |
 | Hobday MHW detection | `marineHeatWaves` Python package | Gulf of Alaska & GBR MHW bands when pipeline JSON is non-empty |
 | Pacific cod CPUE | Barbeaux et al. 2020; AFSC GAP via NOAA FOSS | Blob ecosystem chart (literature-transcribed values) |
 | Snow crab abundance | Szuwalski et al. 2023 *Science* | Blob ecosystem chart (approximate index, unverified year-by-year) |
@@ -52,7 +55,9 @@ NOAA Coral Reef Watch `mhw_5km` is listed in the resources panel as a related pr
 
 ## Baselines
 
-**Home ERSST sparkline / global series:** NOAAGlobalTemp v6 (ERSSTv6 ocean) and OISST v2.1 global annual anomalies each use NOAA's native **1971–2000** baseline.
+**Intro sparkline / Overview global SST:** NOAAGlobalTemp v6 (ERSSTv6 ocean) and OISST v2.1 global annual anomalies each use NOAA's native **1971–2000** baseline.
+
+**Overview ENSO:** NOAA CPC Oceanic Niño Index (ONI), classic index (not RONI). Episodes when |ONI| ≥ 0.5°C for ≥5 consecutive overlapping seasons.
 
 **Gulf of Alaska and Great Barrier Reef (when pipelined):** Monthly SST anomalies and Hobday MHW detection use a **1991–2020** climatology (WMO 30-year normal), computed from raw OISST `sst` in the preprocessing script.
 

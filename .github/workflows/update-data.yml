@@ -1,7 +1,7 @@
 # Ocean Heat Stress Index - nightly data refresh
 #
 # Runs on GitHub's servers every night at 09:00 UTC. Fetches OISST
-# from NOAA ERDDAP and the NOAAGlobalTemp ocean series from NCEI,
+# from NOAA ERDDAP, NOAAGlobalTemp ocean from NCEI, CPC ONI indices,
 # runs Hobday MHW detection, and commits refreshed JSON to ./data/.
 #
 # Soft ERDDAP failures exit 0 with meta.json statuses; the dashboard

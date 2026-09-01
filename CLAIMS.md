@@ -32,7 +32,7 @@ _None. Awaiting user OK to lock any draft below._
 
 ## Live UI map by route (draft mapping)
 
-### Home (`#home`)
+### Intro (`#intro`)
 
 | UI element | Draft claim | Label shown today |
 |------------|-------------|-------------------|
@@ -40,7 +40,19 @@ _None. Awaiting user OK to lock any draft below._
 | Proof stack 2× MHW days since 1982 | OH2 | Source line |
 | Proof stack 70–90% reefs at 1.5°C | OH3 | Source line ("severely degraded or gone") |
 | ERSST sparkline 1981–present | OH4 | Live from `global_ersst.json` when present |
-| Home foot non-affiliation | OH20 | Condensed disclaimer |
+| Intro foot non-affiliation | OH20 | Condensed disclaimer |
+
+### Home / Overview (`#home`)
+
+| UI element | Draft claim | Label shown today |
+|------------|-------------|-------------------|
+| Proof stats row (same three figures) | OH1–OH3 | Source lines under each stat |
+| Dual ERSST + OISST chart | OH4 | NOAA NCEI pill; 1971–2000 baseline tag |
+| Latest ERSST / 1981→present callouts | OH4 | Derived from pipeline JSON |
+| ONI episode timeline + decade count bars | OH21 | CPC ONI; count not severity; partial-decade caveat |
+| ONI peak strength by decade chart | OH22 | Derived from `oni.json`; no steady-increase claim |
+| Related evidence callout (SST, Frölicher, Oliver) | OH2, OH4, OH23 | Literature + pipeline where noted |
+| Bridge to case studies | OH5–OH9 | Narrative only |
 
 ### Case studies index (`#cases`)
 
@@ -100,6 +112,9 @@ Proposed IDs and **suggested** strengths for review. Change or reject freely bef
 | **OH18** | ~43% of west-coast kelp lost in Ningaloo 2011 event | Moderate | Wernberg et al. 2013/2016 |
 | **OH19** | ~91% of surveyed GBR structures bleached in 2016 | Moderate | Hughes et al. 2017 Nature |
 | **OH20** | This project is not affiliated with, endorsed by, or representing NOAA | Strong | Product disclaimer (must remain) |
+| **OH21** | CPC ONI decade episode counts on Overview home | Weak to Moderate (when `oni.json` present) | Count not severity; partial-decade caveat; not doubled ENSO frequency |
+| **OH22** | Decade max |ONI| / peak strength bars from `oni.json` | Moderate (when present) | Derived; chart copy states no steady increase |
+| **OH23** | Oliver et al. 2018 framing (MHW burden with ENSO considered) | Weak / Moderate | Literature transcription only; no year series in UI |
 
 ### Open questions before lock
 
@@ -115,3 +130,5 @@ Proposed IDs and **suggested** strengths for review. Change or reject freely bef
 |------|--------|
 | 2026-07-31 | Initial draft CLAIMS.md scaffolded (Tier C). No locks. |
 | 2026-08-04 | UI map updated for Home / Cases / Case detail; empty Blob/GBR must not show NOAA. |
+| 2026-08-27 | Split Intro vs Overview Home; OH21 ONI charts. |
+| 2026-08-27 | ENSO reframe: 1950 timeline, severity chart, related evidence callout; OH22–OH23 drafts. |
