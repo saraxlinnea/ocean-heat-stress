@@ -6446,6 +6446,13 @@
       "oni": 2.16,
       "start": "2026-07-01",
       "end": "2026-09-30"
+    },
+    {
+      "season": "ASO",
+      "year": 2026,
+      "oni": 2.46,
+      "start": "2026-08-01",
+      "end": "2026-10-31"
     }
   ],
   "episodes": [
@@ -6826,6 +6833,15 @@
       "peak_oni": 1.99,
       "peak_season": "NDJ 2023",
       "strength": "strong"
+    },
+    {
+      "phase": "el_nino",
+      "start": "2026-04-01",
+      "end": "2026-10-31",
+      "duration_seasons": 5,
+      "peak_oni": 2.46,
+      "peak_season": "ASO 2026",
+      "strength": "very_strong"
     }
   ],
   "decade_summary": [
@@ -6937,16 +6953,16 @@
     {
       "decade": "2020s",
       "decade_start": 2020,
-      "el_nino_count": 1,
+      "el_nino_count": 2,
       "la_nina_count": 2,
-      "strong_or_greater": 1,
-      "episode_count": 3,
-      "strong_or_greater_share": 0.333,
-      "max_abs_peak_oni": 1.99,
-      "mean_abs_peak_oni": 1.34,
-      "max_peak_oni": 1.99,
+      "strong_or_greater": 2,
+      "episode_count": 4,
+      "strong_or_greater_share": 0.5,
+      "max_abs_peak_oni": 2.46,
+      "mean_abs_peak_oni": 1.62,
+      "max_peak_oni": 2.46,
       "max_peak_phase": "el_nino",
-      "very_strong_count": 0,
+      "very_strong_count": 1,
       "is_partial": true
     }
   ]
