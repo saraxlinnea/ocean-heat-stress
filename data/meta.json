@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-11-08T15:39:26.991109+00:00",
+  "generated_utc": "2026-11-09T19:18:05.986024+00:00",
   "oisst_dataset": "https://coastwatch.pfeg.noaa.gov/erddap/griddap/ncdcOisst21Agg_LonPM180",
   "noaa_globaltemp_file": "https://www.ncei.noaa.gov/data/noaa-global-surface-temperature/v6/access/timeseries/aravg.ann.ocean.90S.90N.v6.0.0.202512.asc",
   "climatology_baseline": "1991-2020",
@@ -20,7 +20,8 @@
   "method": "hobday",
   "ersst_years": "1850-2025",
   "ersst_status": "ok",
-  "oisst_global_status": "failed",
+  "oisst_global_years": "1982-2021",
+  "oisst_global_status": "ok",
   "oni_status": "ok",
   "oni_source": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
   "oni_episodes": 43,
