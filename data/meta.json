@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-11-18T17:40:19.473720+00:00",
+  "generated_utc": "2026-11-19T17:49:21.600895+00:00",
   "oisst_dataset": "https://coastwatch.pfeg.noaa.gov/erddap/griddap/ncdcOisst21Agg_LonPM180",
   "noaa_globaltemp_file": "https://www.ncei.noaa.gov/data/noaa-global-surface-temperature/v6/access/timeseries/aravg.ann.ocean.90S.90N.v6.0.0.202512.asc",
   "climatology_baseline": "1991-2020",
@@ -23,22 +23,13 @@
       "status": "ok"
     },
     "gbr": {
-      "name": "Great Barrier Reef",
-      "lon": [
-        142,
-        154
-      ],
-      "lat": [
-        -25,
-        -10
-      ],
-      "n_events": 67,
-      "n_months": 408,
-      "status": "ok"
+      "status": "fetch_failed",
+      "error": "no data after chunked fetch"
     }
   },
   "method": "hobday",
-  "ersst_status": "failed",
+  "ersst_years": "1850-2025",
+  "ersst_status": "ok",
   "oisst_global_years": "1982-2025",
   "oisst_global_status": "ok",
   "oni_status": "ok",
